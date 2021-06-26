@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+
 class Category(models.Model):
     category_name = models.CharField(max_length=255, verbose_name="Kategoriya nomi")
 
@@ -34,17 +35,17 @@ class Product(models.Model):
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone, password=None):
-        if not phone:
+    def create_user(self, username, password=None):
+        if not username:
             raise ValueError("Telefon raqam kiritilishi shart")
-        user = self.model(phone = phone)
+        user = self.model(username = username)
         user.set_password(password)
         user.save(using=self._db)
         return user
     
 
-    def create_superuser(self, phone, password):
-        user = self.create_user(phone, password)
+    def create_superuser(self, username, password):
+        user = self.create_user(username, password)
         user.is_admin = True
         user.is_active = True
         user.is_staff = True
@@ -54,10 +55,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    first_name = models.CharField(verbose_name="Ismi", max_length=255, blank=True)
-    last_name = models.CharField(verbose_name="Familiyasi", max_length=255, blank=True)
-    middle_name = models.CharField(verbose_name="Otasining ismi", max_length=255, blank=True)
-    phone = models.CharField(verbose_name="Telefon raqami", max_length=13, blank=True, unique=True)
+    username = models.CharField(verbose_name="Telefon raqami", max_length=13, blank=True, unique=True)
 
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
@@ -66,13 +64,13 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
 
-    USERNAME_FIELD = "phone"
+    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
 
     objects = UserManager()
 
     def __str__(self):
-        return f"{self.last_name} {self.first_name} {self.middle_name} - {self.phone}"
+        return f"{self.last_name} {self.first_name} {self.middle_name} - {self.username}"
     
     def has_perm(self, perm, obj=None):
         return self.is_admin
@@ -97,5 +95,8 @@ class District(models.Model):
 
 
 class Client(models.Model):
+    first_name = models.CharField(verbose_name="Ismi", max_length=255, blank=True)
+    last_name = models.CharField(verbose_name="Familiyasi", max_length=255, blank=True)
+    middle_name = models.CharField(verbose_name="Otasining ismi", max_length=255, blank=True)
     district = models.ForeignKey(District, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
