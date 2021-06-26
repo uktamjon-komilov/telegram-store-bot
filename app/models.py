@@ -94,7 +94,7 @@ class Client(models.Model):
     first_name = models.CharField(verbose_name="Ismi", max_length=255, blank=True)
     last_name = models.CharField(verbose_name="Familiyasi", max_length=255, blank=True)
     middle_name = models.CharField(verbose_name="Otasining ismi", max_length=255, blank=True)
-    district = models.ForeignKey(District, on_delete=models.DO_NOTHING, verbose_name="Tumani")
+    district = models.ForeignKey(District, on_delete=models.DO_NOTHING, verbose_name="Tumani", null=True)
     user_id = models.IntegerField(verbose_name="Telegram foydalanuvchi IDsi", default=0)
 
     STEPS = [
@@ -113,6 +113,7 @@ class Client(models.Model):
     ]
 
     bot_step = models.CharField("Foydalanuvchining botdagi bosqichi", max_length=255, choices=STEPS, default=MAIN_MENU, null=True)
+    lang = models.CharField(verbose_name="Til", max_length=255, default="UZB", null=True)
 
     def __str__(self):
         return f"{self.user_id} - {self.first_name}"
