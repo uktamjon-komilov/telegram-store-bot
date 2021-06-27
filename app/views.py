@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from pprint import pprint
 from .models import *
-from .bot import send_message, delete_message
+from .bot import send_message, send_photo, delete_message
 from .helpers import *
 
 
@@ -61,11 +61,14 @@ def main(request):
         menu = create_category_button()
         send_message(LANG_LIST[5], user_id, menu)
     
-    elif message and get_client_bot_step(user_id) == CHOOSE_CATEGORY:
+    elif get_client_bot_step(user_id) == CHOOSE_CATEGORY:
         try:
             category = Category.objects.get(category_name=message)
             products = Product.objects.filter(category=category, is_active=True)
+            menu = create_product_message(products, user_id, 1, 5)
+            response = send_message("salom", user_id, menu)
+            pprint(menu)
         except:
-            pass
+            send_message(LANG_LIST[18], user_id)
 
     return HttpResponse("Salom")
