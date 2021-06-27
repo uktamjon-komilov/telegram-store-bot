@@ -1,3 +1,4 @@
+from typing import Text
 from language.models import Language
 from .models import Region, District, Category
 from .helpers import get_lang
@@ -52,9 +53,13 @@ def create_contact_keyboard(text):
     return CONTACT_BUTTON
 
 
-def create_category_button():
+def create_category_button(user_id):
+    LANG_LIST = get_lang(user_id)
     CATEGORY_KEYBOARD = {
-        "keyboard": [[]],
+        "keyboard": [
+            [{"text": LANG_LIST[6]}, {"text": LANG_LIST[27]}],
+            [],
+        ],
         "one_time_keyboard": True,
         "resize_keyboard": True
     }
@@ -93,12 +98,32 @@ def create_product_message(products, user_id, index=0, quanity=1):
         }
 
         if index != 0:
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][2].insert(0, {"text": LANG_LIST[22], "callback_data": f"prev-{index-1}"})
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].insert(0, {"text": LANG_LIST[22], "callback_data": f"prev-{index-1}"})
         
         if len(products)-1 > index:
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][2].append({"text": LANG_LIST[23], "callback_data": f"next-{index+1}"})
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].append({"text": LANG_LIST[23], "callback_data": f"next-{index+1}"})
         
         return PRODUCT_INLINE_KEYBOARD
 
     else:
         return None
+
+
+def create_mainmenu_keyboard(user_id):
+    LANG_LIST = get_lang(user_id)
+    MAIN_MENU_KEYBOARD = {
+        "keyboard": [
+            [
+                {"text": LANG_LIST[25]},
+                {"text": LANG_LIST[8]}
+            ],
+            [
+                {"text": LANG_LIST[26]},
+                {"text": LANG_LIST[27]},
+            ]
+        ],
+        "one_time_keyboard": True,
+        "resize_keyboard": True
+    }
+
+    return MAIN_MENU_KEYBOARD

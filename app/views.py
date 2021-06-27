@@ -23,7 +23,14 @@ def main(request):
     LANG_LIST = get_lang(user_id)
     client = get_or_create_client(user_id)
 
-    if not get_client_fullname(user_id).strip() and get_client_bot_step(user_id) == MAIN_MENU:
+
+    if message == LANG_LIST[6] or message == "/start":
+        client.bot_step = MAIN_MENU
+        client.save()
+        menu = create_mainmenu_keyboard(user_id)
+        send_message(LANG_LIST[28], user_id, menu)
+
+    elif not get_client_fullname(user_id).strip() and get_client_bot_step(user_id) == MAIN_MENU:
         client.bot_step = ASK_FULLNAME
         client.save()
         send_message(LANG_LIST[1], 810916014)
@@ -58,17 +65,40 @@ def main(request):
         client.save()
         delete_message(user_id, callback_message_id)
         send_message(LANG_LIST[17], user_id)
-        menu = create_category_button()
+        menu = create_category_button(user_id)
         send_message(LANG_LIST[5], user_id, menu)
     
     elif get_client_bot_step(user_id) == CHOOSE_CATEGORY:
         try:
             category = Category.objects.get(category_name=message)
             products = Product.objects.filter(category=category, is_active=True)
-            menu = create_product_message(products, user_id, 1, 5)
-            response = send_message("salom", user_id, menu)
-            pprint(menu)
+            if products.exists():
+                menu = create_product_message(products, user_id, 0, 1)
+                client.bot_step = CHOOSE_PRODUCT
+                client.save()
+                send_message("product detail", user_id, menu)
+            else:
+                client.bot_step = CHOOSE_CATEGORY
+                client.save()
+                send_message(LANG_LIST[29], user_id)
+                menu = create_category_button(user_id)
+                send_message(LANG_LIST[5], user_id, menu)
         except:
+            client.bot_step = CHOOSE_CATEGORY
+            client.save()
             send_message(LANG_LIST[18], user_id)
+    
+    elif message == LANG_LIST[25]:
+        client.bot_step = CHOOSE_CATEGORY
+        client.save()
+        menu = create_category_button(user_id)
+        send_message(LANG_LIST[5], user_id, menu)
+    
+    else:
+        client.bot_step = MAIN_MENU
+        client.save()
+        send_message(LANG_LIST[18], user_id)
+        menu = create_mainmenu_keyboard(user_id)
+        send_message(LANG_LIST[28], user_id, menu)
 
     return HttpResponse("Salom")
