@@ -1,3 +1,4 @@
+from django.db.models.base import Model
 from django.db.models.enums import Choices
 from .bot_steps import *
 from django.db import models
@@ -116,3 +117,28 @@ class Client(models.Model):
 
     def __str__(self):
         return f"{self.user_id} - {self.fullname}"
+
+
+class Cart(models.Model):
+    client_user_id = models.CharField(max_length=255)
+
+    def __str__(self):
+        client = Client.objects.filter(user_id=self.client_user_id)
+        if client.exists():
+            return client.fullname
+        else:
+            return self.client_user_id
+
+
+class CartItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        client = Client.objects.filter(user_id=self.cart.client_user_id)
+        if client.exists():
+            return f"{self.product} - {self.quantity} - {self.client.fullname}"
+        else:
+            return f"{self.product} - {self.quantity}"
