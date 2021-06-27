@@ -32,7 +32,7 @@ def main(request):
         client.fullname = message
         client.bot_step = ASK_PHONE
         client.save()
-        menu = create_contact_button(LANG_LIST[16])
+        menu = create_contact_keyboard(LANG_LIST[16])
         send_message(LANG_LIST[2], 810916014, menu)
     
     elif get_client_bot_step(user_id) == ASK_PHONE:
@@ -58,6 +58,14 @@ def main(request):
         client.save()
         delete_message(user_id, callback_message_id)
         send_message(LANG_LIST[17], user_id)
-        send_message(LANG_LIST[5], user_id)
+        menu = create_category_button()
+        send_message(LANG_LIST[5], user_id, menu)
+    
+    elif message and get_client_bot_step(user_id) == CHOOSE_CATEGORY:
+        try:
+            category = Category.objects.get(category_name=message)
+            products = Product.objects.filter(category=category, is_active=True)
+        except:
+            pass
 
     return HttpResponse("Salom")
