@@ -75,7 +75,7 @@ AUTH_USER_MODEL = 'app.User'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'd4rtjf7s8c92io',
         'HOST': 'ec2-34-195-143-54.compute-1.amazonaws.com',
         'USER': 'xfvonuqiynkprn',
