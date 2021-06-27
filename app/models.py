@@ -91,9 +91,8 @@ class Client(models.Model):
         verbose_name = "Mijoz"
         verbose_name_plural = "Mijozlar"
 
-    first_name = models.CharField(verbose_name="Ismi", max_length=255, blank=True)
-    last_name = models.CharField(verbose_name="Familiyasi", max_length=255, blank=True)
-    middle_name = models.CharField(verbose_name="Otasining ismi", max_length=255, blank=True)
+    fullname = models.CharField(verbose_name="To'liq ismi", max_length=255, blank=True)
+    phone = models.CharField(verbose_name="Telefon raqami", max_length=15, null=True)
     district = models.ForeignKey(District, on_delete=models.DO_NOTHING, verbose_name="Tumani", null=True)
     user_id = models.IntegerField(verbose_name="Telegram foydalanuvchi IDsi", default=0)
 
@@ -116,4 +115,4 @@ class Client(models.Model):
     lang = models.CharField(verbose_name="Til", max_length=255, default="UZB", null=True)
 
     def __str__(self):
-        return f"{self.user_id} - {self.first_name}"
+        return f"{self.user_id} - {self.fullname}"

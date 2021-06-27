@@ -14,7 +14,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ["id", "user_id", "first_name", "last_name", "middle_name"]
+    list_display = ["id", "fullname", "district", "user_id", "phone"]
+    list_display_links = ["id", "fullname", "district", "user_id", "phone"]
+    search_fields = ["fullname", "district__district_name", "district__region__region_name", "user_id", "phone"]
 
 
 class RegionAdmin(admin.ModelAdmin):
