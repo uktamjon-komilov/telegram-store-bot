@@ -127,3 +127,20 @@ def create_mainmenu_keyboard(user_id):
     }
 
     return MAIN_MENU_KEYBOARD
+
+
+def get_product_detail(products, user_id, index=0):
+    LANG_LIST = get_lang(user_id)
+
+    text = ""
+
+    products = list(products)
+    product = products[index]
+
+    text += (LANG_LIST[30] + " " + product.product_name + "\n")
+    text += (LANG_LIST[31] + " " + str(product.price) + "\n")
+    text += (LANG_LIST[32] + " " + product.category.category_name + "\n")
+    if product.description:
+        text += (LANG_LIST[33] + " " + product.description + "\n")
+
+    return text

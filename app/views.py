@@ -76,14 +76,17 @@ def main(request):
                 menu = create_product_message(products, user_id, 0, 1)
                 client.bot_step = CHOOSE_PRODUCT
                 client.save()
-                send_message("product detail", user_id, menu)
+                product_detail = get_product_detail(products, user_id, 0)
+                send_message(product_detail, user_id, menu)
             else:
                 client.bot_step = CHOOSE_CATEGORY
                 client.save()
                 send_message(LANG_LIST[29], user_id)
                 menu = create_category_button(user_id)
                 send_message(LANG_LIST[5], user_id, menu)
-        except:
+
+        except Exception as e:
+            print(e)
             client.bot_step = CHOOSE_CATEGORY
             client.save()
             send_message(LANG_LIST[18], user_id)
