@@ -16,12 +16,16 @@ def create_regions_keyboard():
 
     return REGIONS_INLINE_KEYBOARD
 
-
-
-def create_districts_keyboard(region):
+def create_districts_keyboard(region_id):
     DISTRICTS_INLINE_KEYBOARD = {
         "inline_keyboard": []
     }
+
+    region = Region.objects.filter(id=int(region_id))
+    if not region.exists():
+        return None
+    else:
+        region = region.first()
 
     districts = District.objects.filter(region=region)
     if districts.exists():
@@ -32,3 +36,14 @@ def create_districts_keyboard(region):
         return None
     
     return DISTRICTS_INLINE_KEYBOARD
+
+
+def create_contact_button(text):
+    CONTACT_BUTTON = {
+        "keyboard": [
+            [{"text": text, "request_contact": True}]
+        ],
+        "one_time_keyboard": True
+    }
+
+    return CONTACT_BUTTON

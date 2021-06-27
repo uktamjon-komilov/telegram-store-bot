@@ -12,8 +12,8 @@ def get_message(update):
         return None
 
 def get_phone(update):
-    if "contact" in update:
-        return update["contact"]["phone_number"]
+    if "contact" in update["message"]:
+        return update["message"]["contact"]["phone_number"]
     else:
         return None
 
@@ -27,7 +27,6 @@ def get_or_create_client(user_id):
         client.bot_step = MAIN_MENU
         client.save()
         return client
-
 
 def get_lang(user_id):
     client = get_or_create_client(user_id)
@@ -51,14 +50,14 @@ def get_client_bot_step(user_id):
 
 def get_user_id(update):
     if "message" in update:
-        user_id = update["message"]["from"]["id"]
+        return update["message"]["from"]["id"]
     elif "callback_query" in update:
-        user_id = update["callback_query"]["from"]["id"]
+        return update["callback_query"]["from"]["id"]
 
 
-def get_callback_id(update):
+def get_callback_message_id(update):
     if "callback_query" in update:
-        return update["callback_query"]["id"]
+        return update["callback_query"]["message"]["message_id"]
     else:
         return None
 

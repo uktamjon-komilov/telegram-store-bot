@@ -18,3 +18,8 @@ def send_message(text, chat_id, menu = None, parse_mode = "html"):
     
     response = bot("sendMessage", data)
     return response
+
+
+def delete_message(chat_id, message_id):
+    data = {"chat_id": chat_id, "message_id": message_id}
+    return bot("deleteMessage", data)
