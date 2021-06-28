@@ -109,3 +109,38 @@ def get_or_create_cart(user_id):
         cart.save()
     
     return cart
+
+
+def increment_cartitem_quantity(cart, product, update, amount):
+    cartitem = CartItem.objects.filter(cart=cart, product=product)
+    quantity = update["callback_query"]["message"]["reply_markup"]["inline_keyboard"][0][1]["text"]
+    quantity = int(quantity)
+    if cartitem.exists():
+        cartitem = cartitem.first()
+        quantity += amount
+        cartitem.quantity = quantity
+        cartitem.save()
+    else:
+        cartitem = CartItem(cart=cart, product=product, quantity=quantity)
+        cartitem.save()
+    
+    return quantity
+
+
+def decrement_cartitem_quantity(cart, product, update, amount):
+    cartitem = CartItem.objects.filter(cart=cart, product=product)
+    quantity = update["callback_query"]["message"]["reply_markup"]["inline_keyboard"][0][1]["text"]
+    quantity = int(quantity)
+    if cartitem.exists():
+        cartitem = cartitem.first()
+        if quantity > 0:
+            quantity -= amount
+        cartitem.quantity = quantity
+        cartitem.save()
+    else:
+        cartitem = CartItem(cart=cart, product=product, quantity=quantity)
+        cartitem.save()
+    
+    return quantity
+
+

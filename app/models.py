@@ -120,6 +120,10 @@ class Client(models.Model):
 
 
 class Cart(models.Model):
+    class Meta:
+        verbose_name = "Buyurtma jihoz"
+        verbose_name_plural = "Buyurtma jihozlar"
+
     client_user_id = models.CharField(max_length=255)
 
     def __str__(self):
@@ -132,6 +136,10 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    class Meta:
+        verbose_name = "Buyurtma"
+        verbose_name_plural = "Buyurtmalar"
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.IntegerField()

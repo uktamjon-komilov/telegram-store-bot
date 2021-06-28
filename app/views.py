@@ -35,14 +35,14 @@ def main(request):
     elif not get_client_fullname(user_id).strip() and get_client_bot_step(user_id) == MAIN_MENU:
         client.bot_step = ASK_FULLNAME
         client.save()
-        send_message(LANG_LIST[1], 810916014)
+        send_message(LANG_LIST[1], user_id)
 
     elif get_client_bot_step(user_id) == ASK_FULLNAME:
         client.fullname = message
         client.bot_step = ASK_PHONE
         client.save()
         menu = create_contact_keyboard(LANG_LIST[16])
-        send_message(LANG_LIST[2], 810916014, menu)
+        send_message(LANG_LIST[2], user_id, menu)
     
     elif get_client_bot_step(user_id) == ASK_PHONE:
         if get_phone(update):
@@ -118,8 +118,6 @@ def main(request):
             cartitem = CartItem(cart=cart, product=product, quantity=quantity)
             cartitem.save()
 
-        send_message("qoshildi", user_id)
-
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == PLUS:
         product = get_cart_product(callback_data, client, user_id)
         if not product:
@@ -129,24 +127,27 @@ def main(request):
         if not cart:
             pass
 
-        cartitem = CartItem.objects.filter(cart=cart, product=product)
-        quantity = update["callback_query"]["message"]["reply_markup"]["inline_keyboard"][0][1]["text"]
-        quantity = int(quantity)
-        if cartitem.exists():
-            cartitem = cartitem.first()
-            quantity += 1
-            cartitem.quantity = quantity
-            cartitem.save()
-        else:
-            cartitem = CartItem(cart=cart, product=product, quantity=quantity)
-            cartitem.save()
-        
-        # increment_cartitem_quantity(cart, product)
+        quantity = increment_cartitem_quantity(cart, product, update, 1)
         
         products = Product.objects.filter(category=product.category, is_active=True)
         menu = create_product_message(products, user_id, product.id, quantity)
-        
         product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[35])
+        edit_message(product_detail, user_id, callback_message_id, menu)
+
+    elif isinstance(callback_data, str) and callback_data.split("-")[0] == MINUS:
+        product = get_cart_product(callback_data, client, user_id)
+        if not product:
+            pass
+
+        cart = get_or_create_cart(user_id)
+        if not cart:
+            pass
+
+        quantity = decrement_cartitem_quantity(cart, product, update, 1)
+        
+        products = Product.objects.filter(category=product.category, is_active=True)
+        menu = create_product_message(products, user_id, product.id, quantity)
+        product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[36])
         edit_message(product_detail, user_id, callback_message_id, menu)
     
     else:

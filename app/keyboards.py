@@ -77,9 +77,10 @@ def create_category_button(user_id):
     return None
 
 
-def create_product_message(products, user_id, index=0, quanity=1):
+def create_product_message(products, user_id, id=0, quanity=1):
     if products.exists():
-        product = list(filter(lambda product: product.id == index, list(products)))[0]
+        products = products.order_by("id")
+        product = list(filter(lambda product: product.id == id, list(products)))[0]
         LANG_LIST = get_lang(user_id)
         PRODUCT_INLINE_KEYBOARD = {
             "inline_keyboard": [
@@ -97,11 +98,15 @@ def create_product_message(products, user_id, index=0, quanity=1):
             ]
         }
 
-        if index != 0:
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].insert(0, {"text": LANG_LIST[22], "callback_data": f"{PREV}-{index-1}"})
+        prev_products = list(filter(lambda product: product.id < id, list(products)))
+        if len(prev_products):
+            last_prev_product = prev_products[-1]
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].insert(0, {"text": LANG_LIST[22], "callback_data": f"{PREV}-{last_prev_product}"})
         
-        if len(products)-1 > index:
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].append({"text": LANG_LIST[23], "callback_data": f"{NEXT}-{index+1}"})
+        next_products = list(filter(lambda product: product.id > id, list(products)))
+        if len(next_products):
+            first_next_product = next_products[0]
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].append({"text": LANG_LIST[23], "callback_data": f"{NEXT}-{first_next_product}"})
         
         return PRODUCT_INLINE_KEYBOARD
 
