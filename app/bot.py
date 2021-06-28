@@ -37,6 +37,20 @@ def send_photo(photo_url, chat_id, menu, parse_mode="html"):
     return bot("sendPhoto", data)
 
 
+def edit_message(text, chat_id, message_id, menu = None, parse_mode = "html"):
+    data = {
+        "chat_id": chat_id,
+        "text": text,
+        "message_id": message_id,
+        "parse_mode": parse_mode
+    }
+
+    if menu:
+        data["reply_markup"] = menu
+    
+    return bot("editMessageText", data)
+
+
 def delete_message(chat_id, message_id):
     data = {"chat_id": chat_id, "message_id": message_id}
     return bot("deleteMessage", data)

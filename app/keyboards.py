@@ -79,15 +79,14 @@ def create_category_button(user_id):
 
 def create_product_message(products, user_id, index=0, quanity=1):
     if products.exists():
-        products = list(products)
-        product = products[index]
+        product = list(filter(lambda product: product.id == index, list(products)))[0]
         LANG_LIST = get_lang(user_id)
         PRODUCT_INLINE_KEYBOARD = {
             "inline_keyboard": [
                 [
-                    {"text": LANG_LIST[20], "callback_data": f"{PLUS}-{product.id}"},
+                    {"text": LANG_LIST[20], "callback_data": f"{MINUS}-{product.id}"},
                     {"text": quanity, "callback_data": NONE},
-                    {"text": LANG_LIST[19], "callback_data": f"{MINUS}-{product.id}"}
+                    {"text": LANG_LIST[19], "callback_data": f"{PLUS}-{product.id}"}
                 ],
                 [
                     {"text": LANG_LIST[21], "callback_data": f"{ADD_CART}-{product.id}"}
@@ -130,18 +129,20 @@ def create_mainmenu_keyboard(user_id):
     return MAIN_MENU_KEYBOARD
 
 
-def get_product_detail(products, user_id, index=0):
+def get_product_detail(products, user_id, id=0, extra_text=""):
     LANG_LIST = get_lang(user_id)
 
     text = ""
 
-    products = list(products)
-    product = products[index]
+    product = list(filter(lambda product: product.id == id, list(products)))[0]
 
     text += (LANG_LIST[30] + " " + product.product_name + "\n")
     text += (LANG_LIST[31] + " " + str(product.price) + "\n")
     text += (LANG_LIST[32] + " " + product.category.category_name + "\n")
     if product.description:
         text += (LANG_LIST[33] + " " + product.description + "\n")
+    
+    if extra_text:
+        text += ("\n" + extra_text)
 
     return text

@@ -4,7 +4,7 @@ from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import *
-from .bot import send_message, send_photo, delete_message
+from .bot import send_message, send_photo, edit_message, delete_message
 from .helpers import *
 from .inline_commands import *
 from pprint import pprint
@@ -18,6 +18,7 @@ def main(request):
 
     user_id = get_user_id(update)
     message = get_message(update)
+    message_id = get_message_id(update)
     callback_message_id = get_callback_message_id(update)
     callback_text = get_callback_text(update)
     callback_data = get_callback_data(update)
@@ -74,10 +75,10 @@ def main(request):
             category = Category.objects.get(category_name=message)
             products = Product.objects.filter(category=category, is_active=True)
             if products.exists():
-                menu = create_product_message(products, user_id, 0, 3)
+                menu = create_product_message(products, user_id, products.first().id, 1)
                 client.bot_step = CHOOSE_PRODUCT
                 client.save()
-                product_detail = get_product_detail(products, user_id, 0)
+                product_detail = get_product_detail(products, user_id, products.first().id)
                 send_message(product_detail, user_id, menu)
             else:
                 client.bot_step = CHOOSE_CATEGORY
@@ -99,21 +100,13 @@ def main(request):
         send_message(LANG_LIST[5], user_id, menu)
     
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == ADD_CART:
-        product_id = callback_data.split("-")[-1]
-        product = Product.objects.filter(id=product_id)
-        if product.exists():
-            product = product.first()
-        else:
-            client.bot_step = CHOOSE_CATEGORY
-            client.save()
-            send_message(LANG_LIST[18], user_id)
+        product = get_cart_product(callback_data, client, user_id)
+        if not product:
+            pass
 
-        cart = Cart.objects.filter(client_user_id=user_id)
-        if cart.exists():
-            cart = cart.first()
-        else:
-            cart = Cart(client_user_id=user_id)
-            cart.save()
+        cart = get_or_create_cart(user_id)
+        if not cart:
+            pass
         
         cartitem = CartItem.objects.filter(cart=cart, product=product)
         quantity = update["callback_query"]["message"]["reply_markup"]["inline_keyboard"][0][1]["text"]
@@ -125,7 +118,36 @@ def main(request):
             cartitem = CartItem(cart=cart, product=product, quantity=quantity)
             cartitem.save()
 
-        send_message("qoshildi", user_id)        
+        send_message("qoshildi", user_id)
+
+    elif isinstance(callback_data, str) and callback_data.split("-")[0] == PLUS:
+        product = get_cart_product(callback_data, client, user_id)
+        if not product:
+            pass
+
+        cart = get_or_create_cart(user_id)
+        if not cart:
+            pass
+
+        cartitem = CartItem.objects.filter(cart=cart, product=product)
+        quantity = update["callback_query"]["message"]["reply_markup"]["inline_keyboard"][0][1]["text"]
+        quantity = int(quantity)
+        if cartitem.exists():
+            cartitem = cartitem.first()
+            quantity += 1
+            cartitem.quantity = quantity
+            cartitem.save()
+        else:
+            cartitem = CartItem(cart=cart, product=product, quantity=quantity)
+            cartitem.save()
+        
+        # increment_cartitem_quantity(cart, product)
+        
+        products = Product.objects.filter(category=product.category, is_active=True)
+        menu = create_product_message(products, user_id, product.id, quantity)
+        
+        product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[35])
+        edit_message(product_detail, user_id, callback_message_id, menu)
     
     else:
         client.bot_step = MAIN_MENU
