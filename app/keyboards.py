@@ -101,12 +101,12 @@ def create_product_message(products, user_id, id=0, quanity=1):
         prev_products = list(filter(lambda product: product.id < id, list(products)))
         if len(prev_products):
             last_prev_product = prev_products[-1]
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].insert(0, {"text": LANG_LIST[22], "callback_data": f"{PREV}-{last_prev_product}"})
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].insert(0, {"text": LANG_LIST[22], "callback_data": f"{PREV}-{last_prev_product.id}"})
         
         next_products = list(filter(lambda product: product.id > id, list(products)))
         if len(next_products):
             first_next_product = next_products[0]
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].append({"text": LANG_LIST[23], "callback_data": f"{NEXT}-{first_next_product}"})
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].append({"text": LANG_LIST[23], "callback_data": f"{NEXT}-{first_next_product.id}"})
         
         return PRODUCT_INLINE_KEYBOARD
 

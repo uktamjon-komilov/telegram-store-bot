@@ -75,7 +75,12 @@ def main(request):
             category = Category.objects.get(category_name=message)
             products = Product.objects.filter(category=category, is_active=True)
             if products.exists():
-                menu = create_product_message(products, user_id, products.first().id, 1)
+                cart = get_or_create_cart(user_id)
+                cartitem = CartItem.objects.filter(product=products.first(), cart=cart, is_active=True)
+                if cartitem.exists():
+                    menu = create_product_message(products, user_id, products.first().id, cartitem.first().quantity)
+                else:
+                    menu = create_product_message(products, user_id, products.first().id, 1)
                 client.bot_step = CHOOSE_PRODUCT
                 client.save()
                 product_detail = get_product_detail(products, user_id, products.first().id)
@@ -148,6 +153,38 @@ def main(request):
         products = Product.objects.filter(category=product.category, is_active=True)
         menu = create_product_message(products, user_id, product.id, quantity)
         product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[36])
+        edit_message(product_detail, user_id, callback_message_id, menu)
+    
+    elif isinstance(callback_data, str) and callback_data.split("-")[0] == NEXT:
+        next_product_id = int(callback_data.split("-")[-1])
+        next_product = Product.objects.filter(id=next_product_id).first()
+        cart = get_or_create_cart(user_id)
+        products = Product.objects.filter(category=next_product.category, is_active=True)
+        cartitem = CartItem.objects.filter(product=next_product, cart=cart, is_active=True)
+        if cartitem.exists():
+            menu = create_product_message(products, user_id, next_product_id, cartitem.first().quantity)
+        else:
+            menu = create_product_message(products, user_id, next_product_id, 1)
+
+        client.bot_step = CHOOSE_PRODUCT
+        client.save()
+        product_detail = get_product_detail(products, user_id, next_product_id)
+        edit_message(product_detail, user_id, callback_message_id, menu)
+
+    elif isinstance(callback_data, str) and callback_data.split("-")[0] == PREV:
+        prev_product_id = int(callback_data.split("-")[-1])
+        prev_product = Product.objects.filter(id=prev_product_id).last()
+        cart = get_or_create_cart(user_id)
+        products = Product.objects.filter(category=prev_product.category, is_active=True)
+        cartitem = CartItem.objects.filter(product=prev_product, cart=cart, is_active=True)
+        if cartitem.exists():
+            menu = create_product_message(products, user_id, prev_product_id, cartitem.first().quantity)
+        else:
+            menu = create_product_message(products, user_id, prev_product_id, 1)
+
+        client.bot_step = CHOOSE_PRODUCT
+        client.save()
+        product_detail = get_product_detail(products, user_id, prev_product_id)
         edit_message(product_detail, user_id, callback_message_id, menu)
     
     else:
