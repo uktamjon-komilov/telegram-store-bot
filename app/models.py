@@ -125,6 +125,7 @@ class Cart(models.Model):
     def __str__(self):
         client = Client.objects.filter(user_id=self.client_user_id)
         if client.exists():
+            client = client.first()
             return client.fullname
         else:
             return self.client_user_id
@@ -139,6 +140,7 @@ class CartItem(models.Model):
     def __str__(self):
         client = Client.objects.filter(user_id=self.cart.client_user_id)
         if client.exists():
-            return f"{self.product} - {self.quantity} - {self.client.fullname}"
+            client = client.first()
+            return f"{self.product} - {self.quantity} - {client.fullname}"
         else:
             return f"{self.product} - {self.quantity}"

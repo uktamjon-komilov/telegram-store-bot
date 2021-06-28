@@ -2,6 +2,7 @@ from typing import Text
 from language.models import Language
 from .models import Region, District, Category
 from .helpers import get_lang
+from .inline_commands import *
 from pprint import pprint
 
 def create_regions_keyboard():
@@ -84,24 +85,24 @@ def create_product_message(products, user_id, index=0, quanity=1):
         PRODUCT_INLINE_KEYBOARD = {
             "inline_keyboard": [
                 [
-                    {"text": LANG_LIST[20], "callback_data": f"plus-{product.id}"},
-                    {"text": quanity, "callback_data": "None"},
-                    {"text": LANG_LIST[19], "callback_data": f"minus-{product.id}"}
+                    {"text": LANG_LIST[20], "callback_data": f"{PLUS}-{product.id}"},
+                    {"text": quanity, "callback_data": NONE},
+                    {"text": LANG_LIST[19], "callback_data": f"{MINUS}-{product.id}"}
                 ],
                 [
-                    {"text": LANG_LIST[21], "callback_data": f"add_cart-{product.id}"}
+                    {"text": LANG_LIST[21], "callback_data": f"{ADD_CART}-{product.id}"}
                 ],
                 [
-                    {"text": LANG_LIST[24], "callback_data": "go_to_cart"}
+                    {"text": LANG_LIST[24], "callback_data": GO_TO_CART}
                 ]
             ]
         }
 
         if index != 0:
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].insert(0, {"text": LANG_LIST[22], "callback_data": f"prev-{index-1}"})
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].insert(0, {"text": LANG_LIST[22], "callback_data": f"{PREV}-{index-1}"})
         
         if len(products)-1 > index:
-            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].append({"text": LANG_LIST[23], "callback_data": f"next-{index+1}"})
+            PRODUCT_INLINE_KEYBOARD["inline_keyboard"][1].append({"text": LANG_LIST[23], "callback_data": f"{NEXT}-{index+1}"})
         
         return PRODUCT_INLINE_KEYBOARD
 

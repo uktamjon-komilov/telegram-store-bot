@@ -29,10 +29,22 @@ class DistrictAdmin(admin.ModelAdmin):
     list_display_links = ["district_name"]
 
 
+class CartAdmin(admin.ModelAdmin):
+    # list_display = ["id", "client_user_id"]
+    pass
+
+
+class CartItemAdmin(admin.ModelAdmin):
+    # list_display = ["id", "product", "cart", "quantity"]
+    pass
+
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(District, DistrictAdmin)
+admin.site.register(Cart)
+admin.site.register(CartItem)
 
 admin.site.unregister(Group)

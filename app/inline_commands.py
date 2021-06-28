@@ -1,0 +1,7 @@
+PLUS = "plus"
+NONE = "None"
+MINUS = "minus"
+ADD_CART = "add_cart"
+GO_TO_CART = "go_to_cart"
+PREV = "prev"
+NEXT = "next"
