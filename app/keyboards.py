@@ -151,3 +151,20 @@ def get_product_detail(products, user_id, id=0, extra_text=""):
         text += ("\n" + extra_text)
 
     return text
+
+
+def create_clearcart_keyboard(cart, user_id):
+    LANG_LIST = get_lang(user_id)
+    CART_INLINE_KEYBOARD = {
+        "inline_keyboard": [
+            [
+                {"text": LANG_LIST[27], "callback_data": CLEAR_CART},
+                {"text": LANG_LIST[39], "callback_data": f"{ORDERING}-{cart.id}"},
+            ],
+            [
+                {"text": LANG_LIST[6], "callback_data": MAIN_MENU_INLINE},
+            ],
+        ]
+    }
+
+    return CART_INLINE_KEYBOARD

@@ -14,6 +14,9 @@ from pprint import pprint
 def main(request):
     REGION_INLINE_KEYBOARD = create_regions_keyboard()
 
+    if request.method == "GET":
+        return HttpResponse("Salom")
+
     update = json.loads(request.body)
 
     user_id = get_user_id(update)
@@ -26,7 +29,10 @@ def main(request):
     client = get_or_create_client(user_id)
 
 
-    if message == LANG_LIST[6] or message == "/start":
+    if message == LANG_LIST[6] or message == "/start" or callback_data == MAIN_MENU_INLINE:
+        if callback_data == MAIN_MENU_INLINE:
+            delete_message(user_id, callback_message_id)
+
         client.bot_step = MAIN_MENU
         client.save()
         menu = create_mainmenu_keyboard(user_id)
@@ -187,6 +193,27 @@ def main(request):
         product_detail = get_product_detail(products, user_id, prev_product_id)
         edit_message(product_detail, user_id, callback_message_id, menu)
     
+    elif (isinstance(callback_data, str) and callback_data == GO_TO_CART) or message == LANG_LIST[8]:
+        cart = get_or_create_cart(user_id)
+        cartitems = CartItem.objects.filter(cart=cart, is_active=True)
+
+        if callback_data == GO_TO_CART:
+            delete_message(user_id, callback_message_id)
+        
+        client.bot_step = MAIN_MENU
+        client.save()
+        menu = create_mainmenu_keyboard(user_id)
+
+        if cartitems.exists():
+            result = send_message("Loading...", user_id, menu)
+            delete_message(user_id, result["result"]["message_id"])
+
+            menu = create_clearcart_keyboard(cart, user_id)
+            cart_details = create_cart_detail(user_id, cartitems)
+            send_message(cart_details, user_id, menu)
+        else:
+            send_message(LANG_LIST[37], user_id, menu)
+
     else:
         client.bot_step = MAIN_MENU
         client.save()

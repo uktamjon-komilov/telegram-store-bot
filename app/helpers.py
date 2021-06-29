@@ -1,3 +1,5 @@
+from app.utils import truncate
+from language.models import Language
 from .models import Client
 from .bot_steps import *
 from language.lang import get_all_langs
@@ -101,7 +103,7 @@ def get_cart_product(callback_data, client, user_id):
 
 
 def get_or_create_cart(user_id):
-    cart = Cart.objects.filter(client_user_id=user_id)
+    cart = Cart.objects.filter(client_user_id=user_id, is_active=True)
     if cart.exists():
         cart = cart.first()
     else:
@@ -144,3 +146,18 @@ def decrement_cartitem_quantity(cart, product, update, amount):
     return quantity
 
 
+def create_cart_detail(user_id, cartitems):
+    LANG_LIST = get_lang(user_id)
+    text = ""
+
+    text += (LANG_LIST[38] + "\n\n")
+
+    for cartitem in cartitems:
+        text += (LANG_LIST[30] + " " + cartitem.product.product_name + "\n")
+        text += (LANG_LIST[31] + " " + str(cartitem.product.price) + "\n")
+        text += (LANG_LIST[32] + " " + cartitem.product.category.category_name + "\n")
+        if cartitem.product.description:
+            text += (LANG_LIST[33] + " " + truncate(cartitem.product.description, 50) + "\n")
+        text += "\n"
+
+    return text

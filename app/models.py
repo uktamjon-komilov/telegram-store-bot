@@ -125,6 +125,7 @@ class Cart(models.Model):
         verbose_name_plural = "Buyurtma jihozlar"
 
     client_user_id = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         client = Client.objects.filter(user_id=self.client_user_id)

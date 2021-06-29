@@ -1,6 +1,6 @@
 from django.conf import settings
-from django.http import response
 import requests as r
+import json
 
 
 BASE_URL = "https://api.telegram.org/bot{}/".format(settings.BOT_TOKEN)
@@ -8,7 +8,7 @@ BASE_URL = "https://api.telegram.org/bot{}/".format(settings.BOT_TOKEN)
 
 def bot(method, data):
     response = r.post(BASE_URL + method, json=data)
-    return response
+    return json.loads(response.text)
 
 
 def send_message(text, chat_id, menu = None, parse_mode = "html"):
