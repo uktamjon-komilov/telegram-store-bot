@@ -219,15 +219,23 @@ def main(request):
         if cart.exists():
             cart = cart.first()
             try:
-                cartitems = CartItem.objects.filter(cart=cart, is_active=True).delete()
+                cartitems = CartItem.objects.filter(cart=cart, is_active=True).update(is_active=False)
             except Exception as e:
                 print(e)
+            cart.is_active = False
+            cart.save()
         
         delete_message(user_id, callback_message_id)
         client.bot_step = MAIN_MENU
         client.save()
         menu = create_mainmenu_keyboard(user_id)
         send_message(LANG_LIST[27], user_id, menu)
+    
+    elif message == LANG_LIST[26]:
+        client.bot_step = MAIN_MENU
+        client.save()
+        menu = create_mainmenu_keyboard(user_id)
+        send_message(LANG_LIST[40], user_id, menu)
 
     else:
         client.bot_step = MAIN_MENU

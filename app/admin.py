@@ -30,8 +30,29 @@ class DistrictAdmin(admin.ModelAdmin):
 
 
 class CartAdmin(admin.ModelAdmin):
-    # list_display = ["id", "client_user_id"]
-    pass
+    def get_client(self, obj):
+        client = Client.objects.filter(user_id=obj.client_user_id)
+        if client.exists():
+            client = client.first()
+            return client.fullname
+    get_client.short_description = 'Mijoz'
+    get_client.admin_order_field = 'cart__client'
+
+
+    def get_update_field(self, obj):
+        return obj.updated_at.strftime("%Y.%m.%d, %H:%M")
+    get_update_field.short_description = "O'zgartirilgan vaqti"
+    get_update_field.admin_order_field = "cart__update_at"
+
+
+    def get_created_field(self, obj):
+        return obj.created_at.strftime("%Y.%m.%d, %H:%M")
+    get_created_field.short_description = "Kiritilgan vaqti"
+    get_created_field.admin_order_field = "cart__created_at"
+
+
+    fields = ["client_user_id", "is_active"]
+    list_display = ["id", "get_client", "get_created_field", "get_update_field"]
 
 
 class CartItemAdmin(admin.ModelAdmin):
@@ -44,7 +65,7 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(District, DistrictAdmin)
-admin.site.register(Cart)
+admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem)
 
 admin.site.unregister(Group)

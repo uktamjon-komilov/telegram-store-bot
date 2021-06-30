@@ -124,8 +124,11 @@ class Cart(models.Model):
         verbose_name = "Buyurtma"
         verbose_name_plural = "Buyurtmalar"
 
-    client_user_id = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
+    client_user_id = models.CharField(verbose_name="Mijozning telegram IDsi", max_length=255)
+    is_active = models.BooleanField(verbose_name="Faol", default=True)
+
+    created_at = models.DateTimeField(verbose_name="Kiritildi", auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(verbose_name="O'zgartirildi", auto_now=True, null=True)
 
     def __str__(self):
         client = Client.objects.filter(user_id=self.client_user_id)
@@ -145,6 +148,9 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(verbose_name="Kiritildi", auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(verbose_name="O'zgartirildi", auto_now=True, null=True)
 
     def __str__(self):
         client = Client.objects.filter(user_id=self.cart.client_user_id)
