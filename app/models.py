@@ -6,6 +6,8 @@ from django.contrib.auth.models import AbstractBaseUser
 
 from .managers import UserManager
 
+from language.models import Region, District
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255, verbose_name="Kategoriya nomi")
@@ -62,29 +64,6 @@ class User(AbstractBaseUser):
     
     def has_module_perms(self, add_label):
         return True
-
-
-class Region(models.Model):
-    class Meta:
-        verbose_name = "Viloyat"
-        verbose_name_plural = "Viloyatlar"
-    
-    region_name = models.CharField(verbose_name="Viloyat nomi", max_length=255)
-
-    def __str__(self):
-        return self.region_name
-
-
-class District(models.Model):
-    class Meta:
-        verbose_name = "Tuman/Shahar"
-        verbose_name_plural = "Tumanlar/Shaharlar"
-
-    district_name = models.CharField(verbose_name="Tuman/shahar nomi", max_length=255)
-    region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
-
-    def __str__(self):
-        return f"{self.district_name} - {self.region}"
 
 
 class Client(models.Model):
