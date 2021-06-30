@@ -1,0 +1,261 @@
+[
+  {
+    "model": "language.language",
+    "pk": 1,
+    "fields": {
+      "uzb": "Assalom alaykum, Falonchi nomli botimizga xush kelibsiz!",
+      "rus": "Assalom alaykum, Falonchi nomli botimizga xush kelibsiz!"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 2,
+    "fields": {
+      "uzb": "Iltimos, botdan foydalanish uchun ism familiyangizni kiriting!",
+      "rus": "Iltimos, botdan foydalanish uchun ism familiyangizni kiriting!"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 3,
+    "fields": {
+      "uzb": "Telefon raqamingizni jo'nating!",
+      "rus": "Telefon raqamingizni jo'nating!"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 4,
+    "fields": {
+      "uzb": "Viloyatingizni tanlang",
+      "rus": "Viloyatingizni tanlang"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 5,
+    "fields": {
+      "uzb": "Tuman yoki shahringizni tanlang",
+      "rus": "Tuman yoki shahringizni tanlang"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 6,
+    "fields": {
+      "uzb": "Mahsulotlar katalogingizni tanlang",
+      "rus": "Mahsulotlar katalogingizni tanlang"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 7,
+    "fields": { "uzb": "Bosh menyu", "rus": "Bosh menyu" }
+  },
+  {
+    "model": "language.language",
+    "pk": 8,
+    "fields": { "uzb": "Savatchani tozalash", "rus": "Savatchani tozalash" }
+  },
+  {
+    "model": "language.language",
+    "pk": 9,
+    "fields": { "uzb": "Savatcha", "rus": "Savatcha" }
+  },
+  {
+    "model": "language.language",
+    "pk": 10,
+    "fields": {
+      "uzb": "Siz shartnoma rasmiylashtirish bosqichidasiz",
+      "rus": "Siz shartnoma rasmiylashtirish bosqichidasiz"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 11,
+    "fields": {
+      "uzb": "Pasport seriyangizni kiriting",
+      "rus": "Pasport seriyangizni kiriting"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 12,
+    "fields": {
+      "uzb": "Pasport raqamingizni kiriting",
+      "rus": "Pasport raqamingizni kiriting"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 13,
+    "fields": { "uzb": "Tasdiqlash", "rus": "Tasdiqlash" }
+  },
+  {
+    "model": "language.language",
+    "pk": 14,
+    "fields": { "uzb": "Bekor qilish", "rus": "Bekor qilish" }
+  },
+  {
+    "model": "language.language",
+    "pk": 15,
+    "fields": {
+      "uzb": "Arizangiz qabul qilindi. Iltimos, kuting admin ko'rib chiqmoqda",
+      "rus": "Arizangiz qabul qilindi. Iltimos, kuting admin ko'rib chiqmoqda"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 16,
+    "fields": { "uzb": "Mahsulotni tanlang", "rus": "Mahsulotni tanlang" }
+  },
+  {
+    "model": "language.language",
+    "pk": 17,
+    "fields": {
+      "uzb": "Telefon raqamni surish",
+      "rus": "Telefon raqamni surish"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 18,
+    "fields": { "uzb": "Ma'lumotlar saqlandi!", "rus": "Ma'lumotlar saqlandi!" }
+  },
+  {
+    "model": "language.language",
+    "pk": 19,
+    "fields": {
+      "uzb": "Mavjud bo'lmagan komanda",
+      "rus": "Mavjud bo'lmagan komanda"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 20,
+    "fields": { "uzb": "+", "rus": "+" }
+  },
+  {
+    "model": "language.language",
+    "pk": 21,
+    "fields": { "uzb": "-", "rus": "-" }
+  },
+  {
+    "model": "language.language",
+    "pk": 22,
+    "fields": { "uzb": "Savatchaga qo'shish", "rus": "Savatchaga qo'shish" }
+  },
+  {
+    "model": "language.language",
+    "pk": 23,
+    "fields": { "uzb": "◀️", "rus": "◀️" }
+  },
+  {
+    "model": "language.language",
+    "pk": 24,
+    "fields": { "uzb": "▶️", "rus": "▶️" }
+  },
+  {
+    "model": "language.language",
+    "pk": 25,
+    "fields": { "uzb": "Savatchaga o'tish", "rus": "Savatchaga o'tish" }
+  },
+  {
+    "model": "language.language",
+    "pk": 26,
+    "fields": { "uzb": "Buyurtma berish", "rus": "Buyurtma berish" }
+  },
+  {
+    "model": "language.language",
+    "pk": 27,
+    "fields": { "uzb": "Bog'lanish", "rus": "Bog'lanish" }
+  },
+  {
+    "model": "language.language",
+    "pk": 28,
+    "fields": {
+      "uzb": "Savatcha tozalandi. Mahsulotlarni tanlashda davom eting",
+      "rus": "Savatcha tozalandi. Mahsulotlarni tanlashda davom eting"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 29,
+    "fields": {
+      "uzb": "Siz bosh menyudasiz. Menyudan kerakli bo'limni tanlang!",
+      "rus": "Siz bosh menyudasiz. Menyudan kerakli bo'limni tanlang!"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 30,
+    "fields": {
+      "uzb": "Siz tanlagan kategoriya bo'yicha mahsulot yo'q!",
+      "rus": "Siz tanlagan kategoriya bo'yicha mahsulot yo'q!"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 31,
+    "fields": { "uzb": "📄 title:", "rus": "📄 Nomi:" }
+  },
+  {
+    "model": "language.language",
+    "pk": 32,
+    "fields": { "uzb": "💵 Narxi:", "rus": "💵 Narxi:" }
+  },
+  {
+    "model": "language.language",
+    "pk": 33,
+    "fields": { "uzb": "🔖 Kategoriyasi:", "rus": "🔖 Kategoriyasi:" }
+  },
+  {
+    "model": "language.language",
+    "pk": 34,
+    "fields": { "uzb": "📝 Batafsil:", "rus": "📝 Batafsil:" }
+  },
+  {
+    "model": "language.language",
+    "pk": 35,
+    "fields": { "uzb": "Savarchaga qo'shildi", "rus": "Savarchaga qo'shildi" }
+  },
+  {
+    "model": "language.language",
+    "pk": 36,
+    "fields": { "uzb": "Bittaga oshirildi", "rus": "Bittaga oshirildi" }
+  },
+  {
+    "model": "language.language",
+    "pk": 37,
+    "fields": { "uzb": "Bittaga kamaytirildi", "rus": "Bittaga kamaytirildi" }
+  },
+  {
+    "model": "language.language",
+    "pk": 38,
+    "fields": {
+      "uzb": "Sizning savatchangizda birorta ham mahsulot mavjud emas, iltimos menyudan kerakli bo'limni tnalang va savatchaga qo'shing.",
+      "rus": "Sizning savatchangizda birorta ham mahsulot mavjud emas, iltimos menyudan kerakli bo'limni tnalang va savatchaga qo'shing."
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 39,
+    "fields": {
+      "uzb": "Sizning savatchangizda quyidagi mahsulotlar bor",
+      "rus": "Sizning savatchangizda quyidagi mahsulotlar bor"
+    }
+  },
+  {
+    "model": "language.language",
+    "pk": 40,
+    "fields": { "uzb": "Buyurtma berish", "rus": "Buyurtma berish" }
+  },
+  {
+    "model": "language.language",
+    "pk": 41,
+    "fields": {
+      "uzb": "Savollar, taklif va mulohazalarni yo''lash uchun +998558014444 raqamiga bog'laning!",
+      "rus": "Savollar, taklif va mulohazalarni yo''lash uchun +998558014444 raqamiga bog'laning!"
+    }
+  }
+]

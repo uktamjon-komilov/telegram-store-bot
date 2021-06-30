@@ -33,6 +33,13 @@ class CartItemAdmin(admin.ModelAdmin):
     # list_display = ["id", "product", "cart", "quantity"]
     pass
 
+class CartItemInlineAdmin(admin.TabularInline):
+    model = CartItem
+    exclude = ["is_active", "is_ordered"]
+
+    def get_extra(self, request, obj=None, **kwargs):
+        return 0
+
 
 class CartAdmin(admin.ModelAdmin):
     def get_client(self, obj):
@@ -58,6 +65,7 @@ class CartAdmin(admin.ModelAdmin):
 
     fields = ["client_user_id", "passport_series", "passport_number", "is_active", "is_ordered"]
     list_display = ["id", "get_client", "get_created_field", "get_update_field"]
+    inlines = [CartItemInlineAdmin]
 
 
 admin.site.register(Product, ProductAdmin)
