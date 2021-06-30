@@ -58,7 +58,7 @@ def create_category_button(user_id):
     LANG_LIST = get_lang(user_id)
     CATEGORY_KEYBOARD = {
         "keyboard": [
-            [{"text": LANG_LIST[6]}, {"text": LANG_LIST[27]}],
+            [{"text": LANG_LIST[6]}, {"text": LANG_LIST[7]}],
             [],
         ],
         "one_time_keyboard": True,
@@ -94,7 +94,11 @@ def create_product_message(products, user_id, id=0, quanity=1):
                 ],
                 [
                     {"text": LANG_LIST[24], "callback_data": GO_TO_CART}
-                ]
+                ],
+                [
+                    {"text": LANG_LIST[6], "callback_data": MAIN_MENU_INLINE},
+                    {"text": LANG_LIST[7], "callback_data": CLEAR_CART}
+                ],
             ]
         }
 
@@ -124,7 +128,7 @@ def create_mainmenu_keyboard(user_id):
             ],
             [
                 {"text": LANG_LIST[26]},
-                {"text": LANG_LIST[27]},
+                {"text": LANG_LIST[7]},
             ]
         ],
         "one_time_keyboard": True,
@@ -158,7 +162,7 @@ def create_clearcart_keyboard(cart, user_id):
     CART_INLINE_KEYBOARD = {
         "inline_keyboard": [
             [
-                {"text": LANG_LIST[27], "callback_data": CLEAR_CART},
+                {"text": LANG_LIST[7], "callback_data": CLEAR_CART},
                 {"text": LANG_LIST[39], "callback_data": f"{ORDERING}-{cart.id}"},
             ],
             [

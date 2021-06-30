@@ -213,6 +213,21 @@ def main(request):
             send_message(cart_details, user_id, menu)
         else:
             send_message(LANG_LIST[37], user_id, menu)
+        
+    elif (isinstance(callback_data, str) and callback_data == CLEAR_CART) or message == LANG_LIST[7]:
+        cart = Cart.objects.filter(client_user_id=user_id, is_active=True)
+        if cart.exists():
+            cart = cart.first()
+            try:
+                cartitems = CartItem.objects.filter(cart=cart, is_active=True).delete()
+            except Exception as e:
+                print(e)
+        
+        delete_message(user_id, callback_message_id)
+        client.bot_step = MAIN_MENU
+        client.save()
+        menu = create_mainmenu_keyboard(user_id)
+        send_message(LANG_LIST[27], user_id, menu)
 
     else:
         client.bot_step = MAIN_MENU
