@@ -29,6 +29,11 @@ class DistrictAdmin(admin.ModelAdmin):
     list_display_links = ["district_name"]
 
 
+class CartItemAdmin(admin.ModelAdmin):
+    # list_display = ["id", "product", "cart", "quantity"]
+    pass
+
+
 class CartAdmin(admin.ModelAdmin):
     def get_client(self, obj):
         client = Client.objects.filter(user_id=obj.client_user_id)
@@ -51,13 +56,8 @@ class CartAdmin(admin.ModelAdmin):
     get_created_field.admin_order_field = "cart__created_at"
 
 
-    fields = ["client_user_id", "is_active"]
+    fields = ["client_user_id", "passport_series", "passport_number", "is_active", "is_ordered"]
     list_display = ["id", "get_client", "get_created_field", "get_update_field"]
-
-
-class CartItemAdmin(admin.ModelAdmin):
-    # list_display = ["id", "product", "cart", "quantity"]
-    pass
 
 
 admin.site.register(Product, ProductAdmin)

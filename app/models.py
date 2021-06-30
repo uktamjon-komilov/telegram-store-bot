@@ -106,7 +106,6 @@ class Client(models.Model):
         (CHOOSE_CATEGORY, CHOOSE_CATEGORY),
         (CHOOSE_PRODUCT, CHOOSE_PRODUCT),
         (CART, CART),
-        (MAKE_CONTRACT, MAKE_CONTRACT),
         (PASSPORT_SERIES, PASSPORT_SERIES),
         (PASSPORT_NUMBER, PASSPORT_NUMBER),
         (CONFIRMATION, CONFIRMATION),
@@ -125,7 +124,10 @@ class Cart(models.Model):
         verbose_name_plural = "Buyurtmalar"
 
     client_user_id = models.CharField(verbose_name="Mijozning telegram IDsi", max_length=255)
+    passport_series = models.CharField(verbose_name="Pasport seriyasi", max_length=2, null=True)
+    passport_number = models.CharField(verbose_name="Pasport raqami", max_length=15, null=True)
     is_active = models.BooleanField(verbose_name="Faol", default=True)
+    is_ordered = models.BooleanField(verbose_name="Buyurtma qilingan", default=False, null=True)
 
     created_at = models.DateTimeField(verbose_name="Kiritildi", auto_now_add=True, null=True)
     updated_at = models.DateTimeField(verbose_name="O'zgartirildi", auto_now=True, null=True)
@@ -148,6 +150,7 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
+    is_ordered = models.BooleanField(default=False, null=True)
 
     created_at = models.DateTimeField(verbose_name="Kiritildi", auto_now_add=True, null=True)
     updated_at = models.DateTimeField(verbose_name="O'zgartirildi", auto_now=True, null=True)

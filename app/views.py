@@ -86,7 +86,7 @@ def main(request):
                 if cartitem.exists():
                     menu = create_product_message(products, user_id, products.first().id, cartitem.first().quantity)
                 else:
-                    menu = create_product_message(products, user_id, products.first().id, 1)
+                    menu = create_product_message(products, user_id, products.first().id, 0)
                 client.bot_step = CHOOSE_PRODUCT
                 client.save()
                 product_detail = get_product_detail(products, user_id, products.first().id)
@@ -236,6 +236,64 @@ def main(request):
         client.save()
         menu = create_mainmenu_keyboard(user_id)
         send_message(LANG_LIST[40], user_id, menu)
+    
+    elif isinstance(callback_data, str) and callback_data.split("-")[0] == ORDERING:
+        cart_id = int(callback_data.split("-")[-1])
+        cart = Cart.objects.filter(id=cart_id, is_active=True)
+        if cart.exists():
+            cart = cart.first()
+            cartitems = CartItem.objects.filter(cart=cart, is_active=True)
+            if cartitems.exists():
+                for cartitem in cartitems:
+                    cartitem.is_ordered = True
+                    cartitem.is_active = False
+                    cartitem.save()
+                
+                cart.is_active = False
+                cart.is_ordered = True
+                cart.save()
+
+                delete_message(user_id, callback_message_id)
+                client.bot_step = PASSPORT_SERIES
+                client.save()
+                menu = create_defaultmenu_keyboard(user_id)
+                send_message(LANG_LIST[9], user_id, menu)
+                send_message(LANG_LIST[10], user_id, menu)
+                
+            else:
+                delete_message(user_id, callback_message_id)
+                client.bot_step = MAIN_MENU
+                client.save()
+                menu = create_mainmenu_keyboard(user_id)
+                send_message(LANG_LIST[37], user_id, menu)
+    
+    elif get_client_bot_step(user_id) == PASSPORT_SERIES:
+        cart = get_or_create_cart(user_id)
+        try:
+            cart.passport_series = message
+            cart.save()
+            menu = create_defaultmenu_keyboard(user_id)
+            client.bot_step = PASSPORT_NUMBER
+            client.save()
+            send_message(LANG_LIST[11], user_id, menu)
+        except:
+            menu = create_defaultmenu_keyboard(user_id)
+            send_message(LANG_LIST[10], user_id, menu)
+
+    elif get_client_bot_step(user_id) == PASSPORT_NUMBER:
+        cart = get_or_create_cart(user_id)
+        try:
+            cart.passport_number = message
+            cart.save()
+            client.bot_step = MAIN_MENU
+            cart.is_active = False
+            cart.is_ordered = True
+            client.save()
+            menu = create_mainmenu_keyboard(user_id)
+            send_message(LANG_LIST[14], user_id, menu)
+        except:
+            menu = create_defaultmenu_keyboard(user_id)
+            send_message(LANG_LIST[10], user_id, menu)
 
     else:
         client.bot_step = MAIN_MENU

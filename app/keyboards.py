@@ -172,3 +172,19 @@ def create_clearcart_keyboard(cart, user_id):
     }
 
     return CART_INLINE_KEYBOARD
+
+
+def create_defaultmenu_keyboard(user_id):
+    LANG_LIST = get_lang(user_id)
+    DEFAULT_KEYBOARD = {
+        "keyboard": [
+            [
+                {"text": LANG_LIST[6]},
+                {"text": LANG_LIST[7]}
+            ]
+        ],
+        "one_time_keyboard": True,
+        "resize_keyboard": True
+    }
+
+    return DEFAULT_KEYBOARD
