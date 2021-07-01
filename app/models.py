@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser
 
 from .managers import UserManager
 
-from language.models import Region, District
+from language.models import *
 
 
 class Category(models.Model):
