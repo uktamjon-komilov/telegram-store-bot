@@ -51,6 +51,13 @@ class CartAdmin(admin.ModelAdmin):
     get_client.short_description = 'Mijoz'
     get_client.admin_order_field = 'cart__client'
 
+    def get_client_contact(self, obj):
+        client = Client.objects.filter(user_id=obj.client_user_id)
+        if client.exists():
+            client = client.first()
+            return client.phone
+    get_client_contact.short_description = 'Telegfon raqami'
+    get_client_contact.admin_order_field = 'cart__phone'
 
     def get_update_field(self, obj):
         return obj.updated_at.strftime("%Y.%m.%d, %H:%M")
@@ -65,7 +72,9 @@ class CartAdmin(admin.ModelAdmin):
 
 
     fields = ["client_user_id", "passport_series", "passport_number", "is_active", "is_ordered"]
-    list_display = ["id", "get_client", "get_created_field", "get_update_field"]
+    list_display = ["id", "get_client", "get_client_contact", "get_created_field", "get_update_field",  "is_ordered", "is_finished"]
+    list_editable = ["is_finished"]
+    list_display_links = ["id", "get_client", "get_client_contact"]
     inlines = [CartItemInlineAdmin]
 
 

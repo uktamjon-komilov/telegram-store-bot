@@ -7,7 +7,9 @@ from .models import *
 from .bot import send_message, send_photo, edit_message, delete_message
 from .helpers import *
 from .inline_commands import *
-from pprint import pprint
+from django.shortcuts import render
+from django.core import serializers
+from django.http import JsonResponse
 
 
 @csrf_exempt
@@ -303,3 +305,13 @@ def main(request):
         send_message(LANG_LIST[28], user_id, menu)
 
     return HttpResponse("Salom")
+
+
+def stats(request):
+    return render(request, "stats.html")
+
+
+def pivot_data(request):
+    dataset = CartItem.objects.all()
+    data = serializers.serialize('json', dataset)
+    return JsonResponse(data, safe=False)
