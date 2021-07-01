@@ -1,6 +1,6 @@
 from typing import Text
 from language.models import Language
-from .models import Category
+from .models import *
 from .helpers import get_lang
 from .inline_commands import *
 from pprint import pprint
