@@ -4,7 +4,7 @@ from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import *
-from .bot import send_message, edit_message, delete_message
+from .bot import send_message, send_photo_group, edit_message, delete_message
 from .helpers import *
 from .inline_commands import *
 from django.shortcuts import render
@@ -91,6 +91,11 @@ def main(request):
                     menu = create_product_message(products, user_id, products.first().id, 0)
                 client.bot_step = CHOOSE_PRODUCT
                 client.save()
+
+                images = get_product_images(products.first())
+                if images:
+                    print(images)
+                    print(send_photo_group(images, user_id))
                 product_detail = get_product_detail(products, user_id, products.first().id)
                 send_message(product_detail, user_id, menu)
             else:

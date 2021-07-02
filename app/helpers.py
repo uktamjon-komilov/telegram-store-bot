@@ -161,3 +161,15 @@ def create_cart_detail(user_id, cartitems):
         text += "\n"
 
     return text
+
+
+def get_product_images(product):
+    images = ProductImage.objects.filter(product=product)
+    image_urls = []
+    if images.exists():
+        for image in images:
+            image_urls.append(image.image.url)
+        
+        return image_urls
+    else:
+        return None

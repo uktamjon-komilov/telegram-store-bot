@@ -28,9 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'app',
-    'language',
-
-    'rest_framework'
+    'language'
 ]
 
 MIDDLEWARE = [
@@ -145,4 +143,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-BOT_TOKEN = '1295038400:AAFFQXjHpY1VfXTaelmaUtd8-zo0vU5HNc0'
+if DEBUG:
+    BOT_TOKEN = '1295038400:AAFFQXjHpY1VfXTaelmaUtd8-zo0vU5HNc0'
+else:
+    BOT_TOKEN = '1718813659:AAH6BASTk49RE3e5gpQhfcVTQLR8k4pNVGU'

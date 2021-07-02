@@ -51,6 +51,22 @@ def edit_message(text, chat_id, message_id, menu = None, parse_mode = "html"):
     return bot("editMessageText", data)
 
 
+def send_photo_group(photo_urls, chat_id):
+    media = []
+    for photo_url in photo_urls:
+        media.append({
+            "type": "photo",
+            "media": photo_url
+        })
+    
+    data = {
+        "chat_id": chat_id,
+        "media": photo_urls,
+    }
+
+    return bot("sendMediaGroup", data)
+
+
 def delete_message(chat_id, message_id):
     data = {"chat_id": chat_id, "message_id": message_id}
     return bot("deleteMessage", data)
