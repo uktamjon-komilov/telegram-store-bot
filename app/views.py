@@ -180,13 +180,15 @@ def main(request):
 
         client.bot_step = CHOOSE_PRODUCT
         client.save()
+        
+        delete_message(user_id, callback_message_id)
 
         images = get_product_images(products.filter(id=next_product_id).first())
         if images:
             send_photo_group(images, user_id)
-        
+
         product_detail = get_product_detail(products, user_id, next_product_id)
-        edit_message(product_detail, user_id, callback_message_id, menu)
+        send_message(product_detail, user_id, menu)
 
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == PREV:
         prev_product_id = int(callback_data.split("-")[-1])
@@ -202,12 +204,14 @@ def main(request):
         client.bot_step = CHOOSE_PRODUCT
         client.save()
 
+        product_detail = get_product_detail(products, user_id, prev_product_id)
+        delete_message(user_id, callback_message_id)
+
         images = get_product_images(products.filter(id=prev_product_id).first())
         if images:
             send_photo_group(images, user_id)
 
-        product_detail = get_product_detail(products, user_id, prev_product_id)
-        edit_message(product_detail, user_id, callback_message_id, menu)
+        send_message(product_detail, user_id, menu)
     
     elif (isinstance(callback_data, str) and callback_data == GO_TO_CART) or message == LANG_LIST[8]:
         cart = get_or_create_cart(user_id)
