@@ -309,7 +309,7 @@ def main(request):
             client.bot_step = MAIN_MENU
             cart.is_active = False
             cart.is_ordered = True
-            client.save()
+            cart.save()
             menu = create_mainmenu_keyboard(user_id)
             send_message(LANG_LIST[14], user_id, menu)
         except:
