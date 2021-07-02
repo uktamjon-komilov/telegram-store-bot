@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models.query_utils import PathInfo
 import requests as r
 import json
 
@@ -24,7 +25,7 @@ def send_message(text, chat_id, menu = None, parse_mode = "html"):
     return bot("sendMessage", data)
 
 
-def send_photo(photo_url, chat_id, menu, parse_mode="html"):
+def send_photo(photo_url, chat_id, menu=None, parse_mode="html"):
     data = {
         "chat_id": chat_id,
         "photo": photo_url,
@@ -52,6 +53,9 @@ def edit_message(text, chat_id, message_id, menu = None, parse_mode = "html"):
 
 
 def send_photo_group(photo_urls, chat_id):
+    if len(photo_urls) == 1 or len(photo_urls) > 10:
+        return send_photo(photo_urls[0], chat_id)
+    
     media = []
     for photo_url in photo_urls:
         media.append({
