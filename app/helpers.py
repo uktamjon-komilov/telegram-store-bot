@@ -106,7 +106,7 @@ def get_cart_product(callback_data, client, user_id):
 
 
 def get_or_create_cart(user_id):
-    cart = Cart.objects.filter(client_user_id=user_id, is_active=True)
+    cart = Cart.objects.filter(client_user_id=user_id, is_active=True, is_ordered=False)
     if cart.exists():
         cart = cart.first()
     else:

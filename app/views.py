@@ -225,12 +225,15 @@ def main(request):
         menu = create_mainmenu_keyboard(user_id)
 
         if cartitems.exists():
-            result = send_message("Loading...", user_id, menu)
-            delete_message(user_id, result["result"]["message_id"])
+            try:
+                result = send_message("Loading...", user_id, menu)
+                delete_message(user_id, result["result"]["message_id"])
 
-            menu = create_clearcart_keyboard(cart, user_id)
-            cart_details = create_cart_detail(user_id, cartitems)
-            send_message(cart_details, user_id, menu)
+                menu = create_clearcart_keyboard(cart, user_id)
+                cart_details = create_cart_detail(user_id, cartitems)
+                send_message(cart_details, user_id, menu)
+            except Exception as e:
+                send_message(str(e), user_id)
         else:
             send_message(LANG_LIST[37], user_id, menu)
         

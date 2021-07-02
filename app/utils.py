@@ -1,5 +1,8 @@
 def truncate(text, length=0):
     if isinstance(text, str):
-        text = lambda text: len(text)>length and text[:length]+'...' or text
+        if len(text) > length:
+            return text[:length]
+        else:
+            return text
     else:
         return ""
