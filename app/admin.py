@@ -4,10 +4,20 @@ from django.contrib.auth.models import Group
 from .models import *
 from language.models import *
 
+import admin_thumbnails
+
+
+@admin_thumbnails.thumbnail("image")
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 3
+
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("id", "product_name", "description", "price", "category", "is_active")
     list_editable = ["is_active"]
+    fields = ["product_name", "description", "price", "category", "is_active"]
+    inlines = [ProductImageInline]
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -79,6 +89,7 @@ class CartAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(ProductImage)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Region, RegionAdmin)

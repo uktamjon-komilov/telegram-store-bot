@@ -4,7 +4,7 @@ from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import *
-from .bot import send_message, send_photo, edit_message, delete_message
+from .bot import send_message, edit_message, delete_message
 from .helpers import *
 from .inline_commands import *
 from django.shortcuts import render
@@ -251,8 +251,6 @@ def main(request):
                     cartitem.is_active = False
                     cartitem.save()
                 
-                cart.is_active = False
-                cart.is_ordered = True
                 cart.save()
 
                 delete_message(user_id, callback_message_id)

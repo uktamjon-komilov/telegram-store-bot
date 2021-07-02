@@ -3,6 +3,14 @@ from django.db.models.enums import Choices
 from .bot_steps import *
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+import os
+import uuid
+from django.utils.html import mark_safe
+
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join("images", filename)
 
 from .managers import UserManager
 
@@ -39,6 +47,11 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.product_name} - {self.category}"
+
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(verbose_name="Mahsulat rasmi", upload_to=get_file_path, null=True, blank=True)
 
 
 class User(AbstractBaseUser):
