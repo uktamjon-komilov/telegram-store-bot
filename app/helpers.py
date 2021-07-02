@@ -157,7 +157,8 @@ def create_cart_detail(user_id, cartitems):
 
     for cartitem in cartitems:
         text += (LANG_LIST[30] + " " + cartitem.product.product_name + "\n")
-        text += (LANG_LIST[31] + " " + str(cartitem.product.price) + "\n")
+        text += (LANG_LIST[41] + " " + str(cartitem.quantity) + "\n")
+        text += (LANG_LIST[31] + " " + str(cartitem.product.price) + "x" + str(cartitem.quantity) + "=" + str(cartitem.product.price*cartitem.quantity) + "\n")
         text += (LANG_LIST[32] + " " + cartitem.product.category.category_name + "\n")
         if cartitem.product.description:
             text += (LANG_LIST[33] + " " + truncate(cartitem.product.description, 50) + "\n")
