@@ -307,6 +307,7 @@ def main(request):
             cart.passport_number = message
             cart.save()
             client.bot_step = MAIN_MENU
+            client.save()
             cart.is_active = False
             cart.is_ordered = True
             cart.save()
