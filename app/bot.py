@@ -61,7 +61,7 @@ def send_photo_group(photo_urls, chat_id):
     
     data = {
         "chat_id": chat_id,
-        "media": photo_urls,
+        "media": media,
     }
 
     return bot("sendMediaGroup", data)

@@ -94,8 +94,7 @@ def main(request):
 
                 images = get_product_images(products.first())
                 if images:
-                    print(images)
-                    print(send_photo_group(images, user_id))
+                    send_photo_group(images, user_id)
                 product_detail = get_product_detail(products, user_id, products.first().id)
                 send_message(product_detail, user_id, menu)
             else:
@@ -177,10 +176,15 @@ def main(request):
         if cartitem.exists():
             menu = create_product_message(products, user_id, next_product_id, cartitem.first().quantity)
         else:
-            menu = create_product_message(products, user_id, next_product_id, 1)
+            menu = create_product_message(products, user_id, next_product_id, 0)
 
         client.bot_step = CHOOSE_PRODUCT
         client.save()
+
+        images = get_product_images(products.filter(id=next_product_id).first())
+        if images:
+            send_photo_group(images, user_id)
+        
         product_detail = get_product_detail(products, user_id, next_product_id)
         edit_message(product_detail, user_id, callback_message_id, menu)
 
@@ -193,10 +197,15 @@ def main(request):
         if cartitem.exists():
             menu = create_product_message(products, user_id, prev_product_id, cartitem.first().quantity)
         else:
-            menu = create_product_message(products, user_id, prev_product_id, 1)
+            menu = create_product_message(products, user_id, prev_product_id, 0)
 
         client.bot_step = CHOOSE_PRODUCT
         client.save()
+
+        images = get_product_images(products.filter(id=prev_product_id).first())
+        if images:
+            send_photo_group(images, user_id)
+
         product_detail = get_product_detail(products, user_id, prev_product_id)
         edit_message(product_detail, user_id, callback_message_id, menu)
     

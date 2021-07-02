@@ -76,7 +76,10 @@ def get_callback_message_id(update):
 
 def get_callback_text(update):
     if "callback_query" in update:
-        return update["callback_query"]["message"]["text"]
+        if "text" in update["callback_query"]["message"]:
+            return update["callback_query"]["message"]["text"]
+        else:
+            return None
     else:
         return None
 
@@ -168,8 +171,7 @@ def get_product_images(product):
     image_urls = []
     if images.exists():
         for image in images:
-            image_urls.append(image.image.url)
-        
+            image_urls.append("https://hamrox.uz/" + image.image.url)
         return image_urls
     else:
         return None
