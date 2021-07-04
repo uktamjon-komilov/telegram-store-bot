@@ -88,7 +88,7 @@ def main(request):
                 if cartitem.exists():
                     menu = create_product_message(products, user_id, products.first().id, cartitem.first().quantity)
                 else:
-                    menu = create_product_message(products, user_id, products.first().id, 0)
+                    menu = create_product_message(products, user_id, products.first().id, 1)
                 client.bot_step = CHOOSE_PRODUCT
                 client.save()
 
@@ -176,7 +176,7 @@ def main(request):
         if cartitem.exists():
             menu = create_product_message(products, user_id, next_product_id, cartitem.first().quantity)
         else:
-            menu = create_product_message(products, user_id, next_product_id, 0)
+            menu = create_product_message(products, user_id, next_product_id, 1)
 
         client.bot_step = CHOOSE_PRODUCT
         client.save()
@@ -199,7 +199,7 @@ def main(request):
         if cartitem.exists():
             menu = create_product_message(products, user_id, prev_product_id, cartitem.first().quantity)
         else:
-            menu = create_product_message(products, user_id, prev_product_id, 0)
+            menu = create_product_message(products, user_id, prev_product_id, 1)
 
         client.bot_step = CHOOSE_PRODUCT
         client.save()
