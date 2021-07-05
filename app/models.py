@@ -108,6 +108,10 @@ class Client(models.Model):
 
     def __str__(self):
         return f"{self.user_id} - {self.fullname}"
+    
+
+    def get_full_address(self):
+        return f"{self.district.district_name} - {self.district.region.region_name}"
 
 
 class Cart(models.Model):

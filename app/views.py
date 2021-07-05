@@ -317,6 +317,22 @@ def main(request):
             menu = create_defaultmenu_keyboard(user_id)
             send_message(LANG_LIST[10], user_id, menu)
 
+    elif message == LANG_LIST[42]:
+        menu = create_lang_keyboard(user_id)
+        send_message(LANG_LIST[45], user_id, menu)
+    
+    elif message == LANG_LIST[43]:
+        client.lang = "UZB"
+        client.save()
+        menu = create_mainmenu_keyboard(user_id)
+        send_message(LANG_LIST[46], user_id, menu)
+
+    elif message == LANG_LIST[44]:
+        client.lang = "RUS"
+        client.save()
+        menu = create_mainmenu_keyboard(user_id)
+        send_message(LANG_LIST[46], user_id, menu)
+
     else:
         client.bot_step = MAIN_MENU
         client.save()

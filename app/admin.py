@@ -80,8 +80,17 @@ class CartAdmin(admin.ModelAdmin):
     get_created_field.short_description = "Kiritilgan vaqti"
     get_created_field.admin_order_field = "cart__created_at"
 
+    def get_client_address(self, obj):
+        client = Client.objects.filter(user_id=obj.client_user_id)
+        if client.exists():
+            client = client.first()
+            return client.get_full_address()
+    get_client_address.short_description = "To'liq manzili"
+    get_client_address.admin_order_field = 'cart__address'
 
-    fields = ["client_user_id", "passport_series", "passport_number", "is_active", "is_ordered"]
+
+    fields = ["client_user_id", "passport_series", "passport_number", "is_active", "is_ordered", "get_client_address"]
+    readonly_fields = ["get_client_address"]
     list_display = ["id", "get_client", "get_client_contact", "get_created_field", "get_update_field",  "is_ordered", "is_finished"]
     list_editable = ["is_finished"]
     list_display_links = ["id", "get_client", "get_client_contact"]

@@ -129,6 +129,9 @@ def create_mainmenu_keyboard(user_id):
             [
                 {"text": LANG_LIST[26]},
                 {"text": LANG_LIST[7]},
+            ],
+            [
+                {"text": LANG_LIST[42]}
             ]
         ],
         "one_time_keyboard": True,
@@ -136,6 +139,22 @@ def create_mainmenu_keyboard(user_id):
     }
 
     return MAIN_MENU_KEYBOARD
+
+
+def create_lang_keyboard(user_id):
+    LANG_LIST = get_lang(user_id)
+    LANG_KEYBOARD = {
+        "keyboard": [
+            [
+                {"text": LANG_LIST[43]},
+                {"text": LANG_LIST[44]},
+            ]
+        ],
+        "one_time_keyboard": True,
+        "resize_keyboard": True
+    }
+
+    return LANG_KEYBOARD
 
 
 def get_product_detail(products, user_id, id=0, extra_text=""):
