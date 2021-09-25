@@ -35,24 +35,26 @@ def main(request):
         if callback_data == MAIN_MENU_INLINE:
             delete_message(user_id, callback_message_id)
 
-        client.bot_step = MAIN_MENU
-        client.save()
         menu = create_mainmenu_keyboard(user_id)
         send_message(LANG_LIST[28], user_id, menu)
+        client.bot_step = MAIN_MENU
+        client.save()
 
     elif not get_client_fullname(user_id).strip() and get_client_bot_step(user_id) == MAIN_MENU:
+        send_message(LANG_LIST[1], user_id)
         client.bot_step = ASK_FULLNAME
         client.save()
-        send_message(LANG_LIST[1], user_id)
 
     elif get_client_bot_step(user_id) == ASK_FULLNAME:
+        menu = create_contact_keyboard(LANG_LIST[16])
+        send_message(LANG_LIST[2], user_id, menu)
         client.fullname = message
         client.bot_step = ASK_PHONE
         client.save()
-        menu = create_contact_keyboard(LANG_LIST[16])
-        send_message(LANG_LIST[2], user_id, menu)
     
     elif get_client_bot_step(user_id) == ASK_PHONE:
+        send_message(LANG_LIST[3], user_id, REGION_INLINE_KEYBOARD)
+
         if get_phone(update):
             client.phone = get_phone(update)
         else:
@@ -60,31 +62,30 @@ def main(request):
 
         client.bot_step = ASK_REGION
         client.save()
-        send_message(LANG_LIST[3], user_id, REGION_INLINE_KEYBOARD)
     
     elif callback_text == LANG_LIST[3] and get_client_bot_step(user_id) == ASK_REGION:
         menu = create_districts_keyboard(callback_data)
+        send_message(LANG_LIST[4], user_id, menu)
         client.bot_step = ASK_DISTRICT
         client.save()
         delete_message(user_id, callback_message_id)
-        send_message(LANG_LIST[4], user_id, menu)
     
     elif callback_text == LANG_LIST[4] and get_client_bot_step(user_id) == ASK_DISTRICT:
+        send_message(LANG_LIST[17], user_id)
         client.district = District.objects.get(id=callback_data)
         client.bot_step = CHOOSE_CATEGORY
         client.save()
         delete_message(user_id, callback_message_id)
-        send_message(LANG_LIST[17], user_id)
         menu = create_category_button(user_id)
         send_message(LANG_LIST[5], user_id, menu)
     
     elif get_client_bot_step(user_id) == CHOOSE_CATEGORY:
         try:
             category = Category.objects.get(category_name=message)
-            products = Product.objects.filter(category=category, is_active=True)
+            products = Product.objects.prefetch_related("category").filter(category=category, is_active=True)
             if products.exists():
                 cart = get_or_create_cart(user_id)
-                cartitem = CartItem.objects.filter(product=products.first(), cart=cart, is_active=True)
+                cartitem = CartItem.objects.prefetch_related("product").prefetch_related("cart").filter(product=products.first(), cart=cart, is_active=True)
                 if cartitem.exists():
                     menu = create_product_message(products, user_id, products.first().id, cartitem.first().quantity)
                 else:
@@ -98,23 +99,23 @@ def main(request):
                 product_detail = get_product_detail(products, user_id, products.first().id)
                 send_message(product_detail, user_id, menu)
             else:
+                send_message(LANG_LIST[29], user_id)
                 client.bot_step = CHOOSE_CATEGORY
                 client.save()
-                send_message(LANG_LIST[29], user_id)
                 menu = create_category_button(user_id)
                 send_message(LANG_LIST[5], user_id, menu)
 
         except Exception as e:
             print(e)
+            send_message(LANG_LIST[18], user_id)
             client.bot_step = CHOOSE_CATEGORY
             client.save()
-            send_message(LANG_LIST[18], user_id)
     
     elif message == LANG_LIST[25]:
-        client.bot_step = CHOOSE_CATEGORY
-        client.save()
         menu = create_category_button(user_id)
         send_message(LANG_LIST[5], user_id, menu)
+        client.bot_step = CHOOSE_CATEGORY
+        client.save()
     
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == ADD_CART:
         product = get_cart_product(callback_data, client, user_id)
@@ -125,7 +126,7 @@ def main(request):
         if not cart:
             pass
         
-        cartitem = CartItem.objects.filter(cart=cart, product=product)
+        cartitem = CartItem.objects.prefetch_related("product").prefetch_related("cart").filter(cart=cart, product=product)
         quantity = update["callback_query"]["message"]["reply_markup"]["inline_keyboard"][0][1]["text"]
         if cartitem.exists():
             cartitem = cartitem.first()
@@ -146,7 +147,7 @@ def main(request):
 
         quantity = increment_cartitem_quantity(cart, product, update, 1)
         
-        products = Product.objects.filter(category=product.category, is_active=True)
+        products = Product.objects.prefetch_related("category").filter(category=product.category, is_active=True)
         menu = create_product_message(products, user_id, product.id, quantity)
         product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[35])
         edit_message(product_detail, user_id, callback_message_id, menu)
@@ -162,17 +163,19 @@ def main(request):
 
         quantity = decrement_cartitem_quantity(cart, product, update, 1)
         
-        products = Product.objects.filter(category=product.category, is_active=True)
+        products = Product.objects.prefetch_related("category").filter(category=product.category, is_active=True)
         menu = create_product_message(products, user_id, product.id, quantity)
         product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[36])
         edit_message(product_detail, user_id, callback_message_id, menu)
     
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == NEXT:
+        delete_message(user_id, callback_message_id)
+        
         next_product_id = int(callback_data.split("-")[-1])
-        next_product = Product.objects.filter(id=next_product_id).first()
+        next_product = Product.objects.prefetch_related("category").filter(id=next_product_id).first()
         cart = get_or_create_cart(user_id)
-        products = Product.objects.filter(category=next_product.category, is_active=True)
-        cartitem = CartItem.objects.filter(product=next_product, cart=cart, is_active=True)
+        products = Product.objects.prefetch_related("category").filter(category=next_product.category, is_active=True)
+        cartitem = CartItem.objects.prefetch_related("product").prefetch_related("cart").filter(product=next_product, cart=cart, is_active=True)
         if cartitem.exists():
             menu = create_product_message(products, user_id, next_product_id, cartitem.first().quantity)
         else:
@@ -180,8 +183,6 @@ def main(request):
 
         client.bot_step = CHOOSE_PRODUCT
         client.save()
-        
-        delete_message(user_id, callback_message_id)
 
         images = get_product_images(products.filter(id=next_product_id).first())
         if images:
@@ -191,11 +192,13 @@ def main(request):
         send_message(product_detail, user_id, menu)
 
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == PREV:
+        delete_message(user_id, callback_message_id)
+
         prev_product_id = int(callback_data.split("-")[-1])
-        prev_product = Product.objects.filter(id=prev_product_id).last()
+        prev_product = Product.objects.prefetch_related("category").filter(id=prev_product_id).last()
         cart = get_or_create_cart(user_id)
-        products = Product.objects.filter(category=prev_product.category, is_active=True)
-        cartitem = CartItem.objects.filter(product=prev_product, cart=cart, is_active=True)
+        products = Product.objects.prefetch_related("category").filter(category=prev_product.category, is_active=True)
+        cartitem = CartItem.objects.prefetch_related("product").prefetch_related("cart").filter(product=prev_product, cart=cart, is_active=True)
         if cartitem.exists():
             menu = create_product_message(products, user_id, prev_product_id, cartitem.first().quantity)
         else:
@@ -205,7 +208,6 @@ def main(request):
         client.save()
 
         product_detail = get_product_detail(products, user_id, prev_product_id)
-        delete_message(user_id, callback_message_id)
 
         images = get_product_images(products.filter(id=prev_product_id).first())
         if images:
@@ -215,7 +217,7 @@ def main(request):
     
     elif (isinstance(callback_data, str) and callback_data == GO_TO_CART) or message == LANG_LIST[8]:
         cart = get_or_create_cart(user_id)
-        cartitems = CartItem.objects.filter(cart=cart, is_active=True)
+        cartitems = CartItem.objects.prefetch_related("product").prefetch_related("cart").filter(cart=cart, is_active=True)
 
         if callback_data == GO_TO_CART:
             delete_message(user_id, callback_message_id)
@@ -238,34 +240,36 @@ def main(request):
             send_message(LANG_LIST[37], user_id, menu)
         
     elif (isinstance(callback_data, str) and callback_data == CLEAR_CART) or message == LANG_LIST[7]:
+        delete_message(user_id, callback_message_id)
+
+        menu = create_mainmenu_keyboard(user_id)
+        send_message(LANG_LIST[27], user_id, menu)
+
         cart = Cart.objects.filter(client_user_id=user_id, is_active=True)
         if cart.exists():
             cart = cart.first()
             try:
-                cartitems = CartItem.objects.filter(cart=cart, is_active=True).update(is_active=False)
+                cartitems = CartItem.objects.prefetch_related("product").prefetch_related("cart").filter(cart=cart, is_active=True).update(is_active=False)
             except Exception as e:
                 print(e)
             cart.is_active = False
             cart.save()
         
-        delete_message(user_id, callback_message_id)
         client.bot_step = MAIN_MENU
         client.save()
-        menu = create_mainmenu_keyboard(user_id)
-        send_message(LANG_LIST[27], user_id, menu)
     
     elif message == LANG_LIST[26]:
-        client.bot_step = MAIN_MENU
-        client.save()
         menu = create_mainmenu_keyboard(user_id)
         send_message(LANG_LIST[40], user_id, menu)
+        client.bot_step = MAIN_MENU
+        client.save()
     
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == ORDERING:
         cart_id = int(callback_data.split("-")[-1])
         cart = Cart.objects.filter(id=cart_id, is_active=True)
         if cart.exists():
             cart = cart.first()
-            cartitems = CartItem.objects.filter(cart=cart, is_active=True)
+            cartitems = CartItem.objects.prefetch_related("product").prefetch_related("cart").filter(cart=cart, is_active=True)
             if cartitems.exists():
                 for cartitem in cartitems:
                     cartitem.is_ordered = True
@@ -291,19 +295,21 @@ def main(request):
     elif get_client_bot_step(user_id) == PASSPORT_SERIES:
         cart = get_or_create_cart(user_id)
         try:
+            menu = create_defaultmenu_keyboard(user_id)
+            send_message(LANG_LIST[11], user_id, menu)
             cart.passport_series = message
             cart.save()
-            menu = create_defaultmenu_keyboard(user_id)
             client.bot_step = PASSPORT_NUMBER
             client.save()
-            send_message(LANG_LIST[11], user_id, menu)
         except:
-            menu = create_defaultmenu_keyboard(user_id)
             send_message(LANG_LIST[10], user_id, menu)
+            menu = create_defaultmenu_keyboard(user_id)
 
     elif get_client_bot_step(user_id) == PASSPORT_NUMBER:
         cart = get_or_create_cart(user_id)
         try:
+            menu = create_mainmenu_keyboard(user_id)
+            send_message(LANG_LIST[14], user_id, menu)
             cart.passport_number = message
             cart.save()
             client.bot_step = MAIN_MENU
@@ -311,8 +317,6 @@ def main(request):
             cart.is_active = False
             cart.is_ordered = True
             cart.save()
-            menu = create_mainmenu_keyboard(user_id)
-            send_message(LANG_LIST[14], user_id, menu)
         except:
             menu = create_defaultmenu_keyboard(user_id)
             send_message(LANG_LIST[10], user_id, menu)
@@ -348,6 +352,6 @@ def stats(request):
 
 
 def pivot_data(request):
-    dataset = CartItem.objects.all()
+    dataset = CartItem.objects.prefetch_related("product").prefetch_related("cart").all()
     data = serializers.serialize('json', dataset)
     return JsonResponse(data, safe=False)
