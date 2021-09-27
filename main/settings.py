@@ -144,6 +144,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if DEBUG:
-    BOT_TOKEN = '1295038400:AAFFQXjHpY1VfXTaelmaUtd8-zo0vU5HNc0'
+    BOT_TOKEN = '2008362600:AAGa_UXb3efnkLiG-qmCCRvtXmU-OLOs8YA'
 else:
     BOT_TOKEN = '1718813659:AAH6BASTk49RE3e5gpQhfcVTQLR8k4pNVGU'

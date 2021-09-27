@@ -4,7 +4,7 @@ from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import *
-from .bot import send_message, send_photo_group, edit_message, delete_message
+from .bot import *
 from .helpers import *
 from .inline_commands import *
 from django.shortcuts import render
@@ -94,10 +94,13 @@ def main(request):
                 client.save()
 
                 images = get_product_images(products.first())
-                if images:
-                    send_photo_group(images, user_id)
                 product_detail = get_product_detail(products, user_id, products.first().id)
-                send_message(product_detail, user_id, menu)
+
+                if images and len(images) >= 1:
+                    send_photo(images[0], product_detail, user_id, menu)
+                else:
+                    send_message(product_detail, user_id, menu)
+
             else:
                 send_message(LANG_LIST[29], user_id)
                 client.bot_step = CHOOSE_CATEGORY
@@ -137,20 +140,27 @@ def main(request):
             cartitem.save()
 
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == PLUS:
+        menu = create_spinner_menu()
+        edit_reply_markup(user_id, callback_message_id, menu)
+
         product = get_cart_product(callback_data, client, user_id)
+        print(product)
         if not product:
             pass
 
         cart = get_or_create_cart(user_id)
+        print(cart)
         if not cart:
             pass
 
         quantity = increment_cartitem_quantity(cart, product, update, 1)
+        print(quantity)
         
         products = Product.objects.prefetch_related("category").filter(category=product.category, is_active=True)
+        print(products)
         menu = create_product_message(products, user_id, product.id, quantity)
-        product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[35])
-        edit_message(product_detail, user_id, callback_message_id, menu)
+        print(menu)
+        edit_reply_markup(user_id, callback_message_id, menu)
 
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == MINUS:
         product = get_cart_product(callback_data, client, user_id)
@@ -165,8 +175,7 @@ def main(request):
         
         products = Product.objects.prefetch_related("category").filter(category=product.category, is_active=True)
         menu = create_product_message(products, user_id, product.id, quantity)
-        product_detail = get_product_detail(products, user_id, product.id, LANG_LIST[36])
-        edit_message(product_detail, user_id, callback_message_id, menu)
+        edit_reply_markup(user_id, callback_message_id, menu)
     
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == NEXT:
         delete_message(user_id, callback_message_id)
@@ -185,11 +194,12 @@ def main(request):
         client.save()
 
         images = get_product_images(products.filter(id=next_product_id).first())
-        if images:
-            send_photo_group(images, user_id)
-
         product_detail = get_product_detail(products, user_id, next_product_id)
-        send_message(product_detail, user_id, menu)
+
+        if images and len(images) >= 1:
+            send_photo(images[0], product_detail, user_id, menu)
+        else:
+            send_message(product_detail, user_id, menu)
 
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == PREV:
         delete_message(user_id, callback_message_id)
@@ -208,12 +218,12 @@ def main(request):
         client.save()
 
         product_detail = get_product_detail(products, user_id, prev_product_id)
-
         images = get_product_images(products.filter(id=prev_product_id).first())
-        if images:
-            send_photo_group(images, user_id)
 
-        send_message(product_detail, user_id, menu)
+        if images and len(images) >= 1:
+            send_photo(images[0], product_detail, user_id, menu)
+        else:
+            send_message(product_detail, user_id, menu)
     
     elif (isinstance(callback_data, str) and callback_data == GO_TO_CART) or message == LANG_LIST[8]:
         cart = get_or_create_cart(user_id)

@@ -123,7 +123,10 @@ def increment_cartitem_quantity(cart, product, update, amount):
     if cartitem.exists():
         cartitem = cartitem.first()
         quantity += amount
-        cartitem.quantity = quantity
+        if cartitem.quantity == 1:
+            cartitem.quantity = 2
+        else:
+            cartitem.quantity += quantity
         cartitem.save()
     else:
         cartitem = CartItem(cart=cart, product=product, quantity=quantity)

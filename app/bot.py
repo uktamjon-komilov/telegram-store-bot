@@ -25,10 +25,11 @@ def send_message(text, chat_id, menu = None, parse_mode = "html"):
     return bot("sendMessage", data)
 
 
-def send_photo(photo_url, chat_id, menu=None, parse_mode="html"):
+def send_photo(photo_url, caption, chat_id, menu=None, parse_mode="html"):
     data = {
         "chat_id": chat_id,
         "photo": photo_url,
+        "caption": caption,
         "parse_mode": parse_mode
     }
 
@@ -50,6 +51,16 @@ def edit_message(text, chat_id, message_id, menu = None, parse_mode = "html"):
         data["reply_markup"] = menu
     
     return bot("editMessageText", data)
+
+
+def edit_reply_markup(chat_id, message_id, menu):
+    data = {
+        "chat_id": chat_id,
+        "message_id": message_id,
+        "reply_markup": menu
+    }
+
+    return bot("editMessageReplyMarkup", data)
 
 
 def send_photo_group(photo_urls, chat_id):

@@ -77,6 +77,16 @@ def create_category_button(user_id):
     return None
 
 
+def create_spinner_menu():
+    return {
+        "inline_keyboard": [
+            [
+                {"text": "⏳", "callback_data": "None"}
+            ]
+        ]
+    }
+
+
 def create_product_message(products, user_id, id=0, quanity=1):
     if products.exists():
         products = products.order_by("id")
@@ -89,9 +99,9 @@ def create_product_message(products, user_id, id=0, quanity=1):
                     {"text": quanity, "callback_data": NONE},
                     {"text": LANG_LIST[19], "callback_data": f"{PLUS}-{product.id}"}
                 ],
-                [
-                    {"text": LANG_LIST[21], "callback_data": f"{ADD_CART}-{product.id}"}
-                ],
+                # [
+                #     {"text": LANG_LIST[21], "callback_data": f"{ADD_CART}-{product.id}"}
+                # ],
                 [
                     {"text": LANG_LIST[24], "callback_data": GO_TO_CART}
                 ],
