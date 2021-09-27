@@ -1,5 +1,7 @@
+from app.bot import send_photo
 from django.db.models.base import Model
 from django.db.models.enums import Choices
+from django.db.models.fields import NullBooleanField
 from .bot_steps import *
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
@@ -159,3 +161,36 @@ class CartItem(models.Model):
             return f"{self.product} - {self.quantity} - {client.fullname}"
         else:
             return f"{self.product} - {self.quantity}"
+
+
+
+class Post(models.Model):
+    title = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="images/post/", null=True, blank=True)
+    content = models.TextField()
+
+    def __str__(self):
+        return self.title
+    
+
+    def save(self, *args, **kwargs):
+        super(Post, self).save(*args, **kwargs)
+        self.clear_content()
+        try:
+            from app.bot import send_message
+            import socket
+            clients = Client.objects.all()
+            for client in clients:
+                if self.image:
+                    image = "https://hamrox.uz/" + self.image.url
+                    print(image)
+                    res = send_photo(image, self.content, client.user_id)
+                    print(res)
+                else:
+                    res = send_message(self.content, client.user_id)
+                    print(res)
+        except Exception as e:
+            print(e)
+
+    def clear_content(self):
+        self.content = self.content.replace("<p>", "").replace("</p>", "").replace(' style=""', "").replace("<br>", chr(10))

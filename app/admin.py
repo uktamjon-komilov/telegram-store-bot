@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
+from django_summernote.admin import SummernoteModelAdmin
 
 from .models import *
 from language.models import *
@@ -40,9 +41,10 @@ class DistrictAdmin(admin.ModelAdmin):
     list_display_links = ["district_name"]
 
 
-class CartItemAdmin(admin.ModelAdmin):
-    # list_display = ["id", "product", "cart", "quantity"]
-    pass
+# class CartItemAdmin(admin.ModelAdmin):
+#     # list_display = ["id", "product", "cart", "quantity"]
+#     pass
+
 
 class CartItemInlineAdmin(admin.TabularInline):
     model = CartItem
@@ -97,6 +99,11 @@ class CartAdmin(admin.ModelAdmin):
     inlines = [CartItemInlineAdmin]
 
 
+class PostAdmin(SummernoteModelAdmin):
+    summernote_fields = ("content",)
+
+
+admin.site.register(Post, PostAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductImage)
 admin.site.register(Category, CategoryAdmin)
@@ -104,6 +111,6 @@ admin.site.register(Client, ClientAdmin)
 admin.site.register(Region, RegionAdmin)
 admin.site.register(District, DistrictAdmin)
 admin.site.register(Cart, CartAdmin)
-admin.site.register(CartItem)
+# admin.site.register(CartItem)
 
 admin.site.unregister(Group)

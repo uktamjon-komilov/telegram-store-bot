@@ -12,6 +12,7 @@ admin.site.index_title = "Telegram Bot Administratsiyasi"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
+    path('summernote/', include('django_summernote.urls')),
 ]
 
 if settings.DEBUG:

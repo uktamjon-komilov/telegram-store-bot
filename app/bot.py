@@ -16,7 +16,8 @@ def send_message(text, chat_id, menu = None, parse_mode = "html"):
     data = {
         "chat_id": chat_id,
         "text": text,
-        "parse_mode": parse_mode
+        "parse_mode": parse_mode,
+        "disable_web_page_preview": True
     }
 
     if menu:
