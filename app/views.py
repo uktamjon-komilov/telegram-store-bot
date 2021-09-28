@@ -89,7 +89,7 @@ def main(request):
                 if cartitem.exists():
                     menu = create_product_message(products, user_id, products.first().id, cartitem.first().quantity)
                 else:
-                    menu = create_product_message(products, user_id, products.first().id, 1)
+                    menu = create_product_message(products, user_id, products.first().id, 0)
                 client.bot_step = CHOOSE_PRODUCT
                 client.save()
 
@@ -163,6 +163,9 @@ def main(request):
         edit_reply_markup(user_id, callback_message_id, menu)
 
     elif isinstance(callback_data, str) and callback_data.split("-")[0] == MINUS:
+        menu = create_spinner_menu()
+        edit_reply_markup(user_id, callback_message_id, menu)
+        
         product = get_cart_product(callback_data, client, user_id)
         if not product:
             pass
@@ -358,10 +361,49 @@ def main(request):
 
 
 def stats(request):
-    return render(request, "stats.html")
+    context = {
+        "clients": Client.objects.all()
+    }
+    return render(request, "stats.html", context)
 
 
-def pivot_data(request):
-    dataset = CartItem.objects.prefetch_related("product").prefetch_related("cart").all()
-    data = serializers.serialize('json', dataset)
-    return JsonResponse(data, safe=False)
+def ordered_products(request):
+    ordered_products_list = []
+    products = Product.objects.all()
+    for product in products:
+        cartitems = CartItem.objects.prefetch_related("product").filter(product=product)
+        if cartitems.exists():
+            ordered_products_list.append({"x": product.product_name, "y": 0})
+            for cartitem in cartitems:
+                ordered_products_list[-1]["y"] += cartitem.quantity
+            
+    return JsonResponse(ordered_products_list, safe=False)
+
+
+def ordering_regions(request):
+    ordering_regions_list = []
+    regions = Region.objects.all()
+    for region in regions:
+        region_item = {"x": region.region_name, "y": 0}
+        clients = list(map(lambda c: c.user_id, Client.objects.filter(district__region=region)))
+        cartitems = CartItem.objects.filter(cart__client_user_id__in=clients)
+        for cartitem in cartitems:
+            region_item["y"] += cartitem.quantity
+        
+        ordering_regions_list.append(region_item)
+    
+    return JsonResponse(ordering_regions_list, safe=False)
+
+
+def types_of_orders(request):
+    active_orders = Cart.objects.filter(is_active=True)
+    ordered_orders = Cart.objects.filter(is_ordered=True)
+    finished_orders = Cart.objects.filter(is_finished=True)
+
+    order_types = [
+        {"x": "Yakunlanmagan buyurtmalar", "y": active_orders.count()},
+        {"x": "Hal qilinmagan buyurtmalar", "y": ordered_orders.count()},
+        {"x": "Hal qilingan buyurtmalar", "y": finished_orders.count()},
+    ]
+
+    return JsonResponse(order_types, safe=False)

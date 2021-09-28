@@ -88,7 +88,7 @@ class Client(models.Model):
 
     fullname = models.CharField(verbose_name="To'liq ismi", max_length=255, blank=True)
     phone = models.CharField(verbose_name="Telefon raqami", max_length=15, null=True)
-    district = models.ForeignKey(District, on_delete=models.DO_NOTHING, verbose_name="Tumani", null=True)
+    district = models.ForeignKey(District, on_delete=models.DO_NOTHING, verbose_name="Tumani", null=True, related_name="client")
     user_id = models.IntegerField(verbose_name="Telegram foydalanuvchi IDsi", default=0)
 
     STEPS = [

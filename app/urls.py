@@ -4,5 +4,7 @@ from . import views
 urlpatterns = [
     path("bot/", views.main),
     path("", views.stats),
-    path("data/", views.pivot_data, name="pivot_data"),
+    path("ordered-products/", views.ordered_products, name="ordered-products"),
+    path("ordering-regions/", views.ordering_regions, name="ordering-regions"),
+    path("types-of-orders/", views.types_of_orders, name="types-of-orders"),
 ]

@@ -29,7 +29,7 @@ class District(models.Model):
         verbose_name_plural = "Tumanlar/Shaharlar"
 
     district_name = models.CharField(verbose_name="Tuman/shahar nomi", max_length=255)
-    region = models.ForeignKey(Region, on_delete=models.DO_NOTHING)
+    region = models.ForeignKey(Region, on_delete=models.DO_NOTHING, related_name="district")
 
     def __str__(self):
         return f"{self.district_name} - {self.region}"

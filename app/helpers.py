@@ -122,17 +122,14 @@ def increment_cartitem_quantity(cart, product, update, amount):
     quantity = int(quantity)
     if cartitem.exists():
         cartitem = cartitem.first()
-        quantity += amount
-        if cartitem.quantity == 1:
-            cartitem.quantity = 2
-        else:
-            cartitem.quantity += quantity
+        cartitem.quantity += 1
         cartitem.save()
     else:
-        cartitem = CartItem(cart=cart, product=product, quantity=quantity)
+        cartitem = CartItem(cart=cart, product=product, quantity=1)
+
         cartitem.save()
     
-    return quantity
+    return cartitem.quantity
 
 
 def decrement_cartitem_quantity(cart, product, update, amount):
