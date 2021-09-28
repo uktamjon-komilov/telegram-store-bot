@@ -193,4 +193,4 @@ class Post(models.Model):
             print(e)
 
     def clear_content(self):
-        self.content = self.content.replace("<p>", "").replace("</p>", "").replace(' style=""', "").replace("<br>", chr(10))
+        self.content = self.content.replace("<p>", "").replace("</p>", "").replace(' style=""', "").replace("<br>", "{}{}".format(chr(10), chr(10))).replace("&nbsp;", "{}{}".format(chr(10), chr(10)))
